@@ -147,7 +147,7 @@ ACOMPANHAMENTO EM TEMPO REAL
 </div>
 
 <div id="ultimaAtualizacao">
-Atualizado em:
+Última atualização:
 </div>
 
 </div>
@@ -304,14 +304,6 @@ resumoDias[base][dataLimite] = 0;
 }
 
 resumoDias[base][dataLimite]++;
-
-}
-
-if(dataLimite){
-
-if(!servicosRecentes[prefixo]){
-servicosRecentes[prefixo] = 0;
-}
 
 }
 
@@ -546,18 +538,16 @@ document.getElementById("proximosDias").innerHTML =
 htmlDias;
 
 /* =========================
-DATA E HORA ATUALIZAÇÃO
+ÚLTIMA ATUALIZAÇÃO PLANILHA
 ========================= */
 
-const agora = new Date();
+let ultimaLinha = linhas[1];
 
-const dataHora =
-agora.toLocaleDateString('pt-BR') +
-" às " +
-agora.toLocaleTimeString('pt-BR');
+let atualizacao =
+(ultimaLinha[37] || "").toString().trim();
 
 document.getElementById("ultimaAtualizacao").innerText =
-"Última atualização: " + dataHora;
+"Última atualização da planilha: " + atualizacao;
 
 }
 
