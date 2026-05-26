@@ -3,50 +3,64 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Painel de Serviços</title>
+<title>Painel Operacional</title>
 
 <style>
 
 body{
     font-family: Arial;
-    background:#f4f4f4;
-    padding:40px;
+    background:#f3f3f3;
+    padding:20px;
 }
 
 h1{
-    color:#222;
+    color:#111;
+    margin-bottom:20px;
 }
 
 table{
     width:100%;
+    border-collapse:collapse;
     background:white;
-    border-collapse: collapse;
-    margin-top:20px;
 }
 
-th, td{
-    padding:15px;
+th{
+    background:#0b0b0b;
+    color:white;
+    padding:14px;
+    text-align:center;
+}
+
+td{
+    padding:12px;
     border:1px solid #ddd;
     text-align:center;
 }
 
-th{
-    background:#111;
-    color:white;
+.alta{
+    background:#ffdddd;
 }
 
-.alto{
-    color:red;
+.media{
+    background:#fff4cc;
+}
+
+.baixa{
+    background:#ddffdd;
+}
+
+.trabalhando{
+    color:green;
     font-weight:bold;
 }
 
-.medio{
+.atribuida{
     color:orange;
     font-weight:bold;
 }
 
-.baixo{
-    color:green;
+.online{
+    color:#0084ff;
     font-weight:bold;
 }
 
@@ -62,29 +76,41 @@ th{
 <tr>
 <th>Base</th>
 <th>Equipe</th>
-<th>Quantidade de Serviços</th>
+<th>Bairro</th>
+<th>Serviço</th>
+<th>Situação</th>
+<th>Tempo</th>
 <th>Prioridade</th>
 </tr>
 
-<tr>
-<td>Formosa</td>
-<td>Equipe Norte</td>
-<td>18</td>
-<td class="alto">Alta</td>
+<tr class="alta">
+<td>Vila Brasília</td>
+<td>APAL008T</td>
+<td>Cidade Vera Cruz</td>
+<td>Mudança de Padrão</td>
+<td class="trabalhando">Trabalhando</td>
+<td>00:00:28</td>
+<td>Alta</td>
 </tr>
 
-<tr>
-<td>Brasília</td>
-<td>Equipe Sul</td>
-<td>9</td>
-<td class="medio">Média</td>
+<tr class="media">
+<td>Setor Garavelo</td>
+<td>APAL090M</td>
+<td>Jardim Helvécia</td>
+<td>Verificação de Medidor</td>
+<td class="atribuida">Atribuída</td>
+<td>00:14:46</td>
+<td>Média</td>
 </tr>
 
-<tr>
-<td>Goiânia</td>
-<td>Equipe Centro</td>
-<td>3</td>
-<td class="baixo">Baixa</td>
+<tr class="baixa">
+<td>Senador Canedo</td>
+<td>SENL006M</td>
+<td>Jardim Barcelona</td>
+<td>Ligação Nova Urbana</td>
+<td class="online">Online</td>
+<td>00:00:10</td>
+<td>Baixa</td>
 </tr>
 
 </table>
