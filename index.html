@@ -469,6 +469,10 @@ htmlRecentes += "</table>";
 document.getElementById("servicosRecentes").innerHTML =
 htmlRecentes;
 
+/* ==========================
+ULTIMO BLOCO ATUALIZADO
+========================== */
+
 let proximasDatas = datas.slice(0,5);
 
 let htmlDias = "<table>";
@@ -489,8 +493,15 @@ htmlDias += `<tr><td>${base}</td>`;
 
 proximasDatas.forEach(data=>{
 
-let qtd =
-(resumoDias[base][data] || []).length;
+let qtd = 0;
+
+if(resumoDias[base][data]){
+
+qtd = resumoDias[base][data]
+.filter(item => item !== "")
+.length;
+
+}
 
 htmlDias += `<td>${qtd}</td>`;
 
@@ -508,8 +519,13 @@ let totalDia = 0;
 
 for(let base in resumoDias){
 
-totalDia +=
-(resumoDias[base][data] || []).length;
+if(resumoDias[base][data]){
+
+totalDia += resumoDias[base][data]
+.filter(item => item !== "")
+.length;
+
+}
 
 }
 
