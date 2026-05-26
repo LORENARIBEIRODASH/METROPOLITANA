@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Dash Comercial</title>
+<title>COMERCIAL METROPOLITANA</title>
 
 <style>
 
@@ -88,13 +88,18 @@ tr:nth-child(even){
     background:#f5f5f5;
 }
 
+.total{
+    background:#dbeafe;
+    font-weight:bold;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<h1>DASH COMERCIAL</h1>
+<h1>COMERCIAL METROPOLITANA</h1>
 
 <div class="subtitulo">
 ACOMPANHAMENTO EM TEMPO REAL
@@ -183,7 +188,7 @@ border-radius:15px;
 
 <div class="bloco">
 
-<h3>Prefixos por Base</h3>
+<h3>Prefixos por Fiscal</h3>
 
 <div id="prefixosBase"></div>
 
@@ -319,19 +324,29 @@ document.getElementById("totalServicos").innerText =
 totalServicos;
 
 /* ==========================
-PREFIXOS POR BASE
+PREFIXOS POR FISCAL
 ========================== */
 
-let htmlPrefixos = "<table>";
+let htmlPrefixos = "";
 
 htmlPrefixos += `
+
+<h3 style="margin-top:0;color:#1e3a8a;">
+IVAN
+</h3>
+
+<table>
+
 <tr>
 <th>Base</th>
 <th>Prefixos</th>
 </tr>
+
 `;
 
-for(let base in prefixosPorBase){
+["19","24","51","66","92"].forEach(base=>{
+
+if(prefixosPorBase[base]){
 
 htmlPrefixos += `
 <tr>
@@ -341,6 +356,72 @@ htmlPrefixos += `
 `;
 
 }
+
+});
+
+htmlPrefixos += "</table><br>";
+
+htmlPrefixos += `
+
+<h3 style="color:#1e3a8a;">
+RAFAEL
+</h3>
+
+<table>
+
+<tr>
+<th>Base</th>
+<th>Prefixos</th>
+</tr>
+
+`;
+
+["71","50","61","52"].forEach(base=>{
+
+if(prefixosPorBase[base]){
+
+htmlPrefixos += `
+<tr>
+<td>${base}</td>
+<td>${Array.from(prefixosPorBase[base]).join(" / ")}</td>
+</tr>
+`;
+
+}
+
+});
+
+htmlPrefixos += "</table><br>";
+
+htmlPrefixos += `
+
+<h3 style="color:#1e3a8a;">
+LUIS
+</h3>
+
+<table>
+
+<tr>
+<th>Base</th>
+<th>Prefixos</th>
+</tr>
+
+`;
+
+["09","10","20","21","22","18"].forEach(base=>{
+
+if(prefixosPorBase[base]){
+
+htmlPrefixos += `
+<tr>
+<td>${base}</td>
+<td>${Array.from(prefixosPorBase[base]).join(" / ")}</td>
+</tr>
+`;
+
+}
+
+});
 
 htmlPrefixos += "</table>";
 
@@ -357,6 +438,7 @@ htmlRecentes += `
 <tr>
 <th>Prefixo</th>
 <th>Quantidade</th>
+<th>Data Limite</th>
 </tr>
 `;
 
@@ -366,6 +448,7 @@ htmlRecentes += `
 <tr>
 <td>${prefixo}</td>
 <td>${servicosRecentes[prefixo]}</td>
+<td>${dataMaisProxima}</td>
 </tr>
 `;
 
@@ -408,6 +491,24 @@ htmlDias += `<td>${qtd}</td>`;
 htmlDias += "</tr>";
 
 }
+
+htmlDias += "<tr class='total'><td>TOTAL</td>";
+
+proximasDatas.forEach(data=>{
+
+let totalDia = 0;
+
+for(let base in resumoDias){
+
+totalDia += resumoDias[base][data] || 0;
+
+}
+
+htmlDias += `<td>${totalDia}</td>`;
+
+});
+
+htmlDias += "</tr>";
 
 htmlDias += "</table>";
 
