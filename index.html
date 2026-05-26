@@ -35,6 +35,12 @@ h1{
     font-size:22px;
 }
 
+#ultimaAtualizacao{
+    margin-top:10px;
+    font-size:14px;
+    color:#cbd5e1;
+}
+
 .cards{
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -138,6 +144,10 @@ tr:nth-child(even){
 
 <div class="subtitulo">
 ACOMPANHAMENTO EM TEMPO REAL
+</div>
+
+<div id="ultimaAtualizacao">
+Atualizado em:
 </div>
 
 </div>
@@ -283,10 +293,6 @@ prefixosPorBase[base].add(prefixo);
 
 }
 
-/* =========================
-SERVIÇOS POR BASE + DATA
-========================= */
-
 if(base){
 
 if(!resumoDias[base]){
@@ -300,10 +306,6 @@ resumoDias[base][dataLimite] = 0;
 resumoDias[base][dataLimite]++;
 
 }
-
-/* =========================
-SERVIÇOS DA DATA MAIS PRÓXIMA
-========================= */
 
 if(dataLimite){
 
@@ -542,6 +544,20 @@ htmlDias += "</table>";
 
 document.getElementById("proximosDias").innerHTML =
 htmlDias;
+
+/* =========================
+DATA E HORA ATUALIZAÇÃO
+========================= */
+
+const agora = new Date();
+
+const dataHora =
+agora.toLocaleDateString('pt-BR') +
+" às " +
+agora.toLocaleTimeString('pt-BR');
+
+document.getElementById("ultimaAtualizacao").innerText =
+"Última atualização: " + dataHora;
 
 }
 
