@@ -3,252 +3,207 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Painel Operacional</title>
+<title>Painel Dinâmico</title>
 
 <style>
 
 body{
-    margin:0;
-    padding:20px;
     font-family:Arial;
     background:#f4f4f4;
+    padding:20px;
 }
 
 h1{
     margin-bottom:20px;
 }
 
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-    margin-bottom:20px;
-}
-
-.card{
-    background:white;
-    border-radius:10px;
-    padding:20px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-.card h2{
-    margin:0;
-    font-size:35px;
-}
-
-.card p{
-    color:#666;
-    margin-top:10px;
-}
-
 table{
     width:100%;
     border-collapse:collapse;
+    margin-bottom:40px;
     background:white;
 }
 
 th{
     background:#000;
     color:white;
-    padding:12px;
+    padding:10px;
+    font-size:14px;
 }
 
 td{
+    padding:8px;
     border:1px solid #ddd;
-    padding:10px;
     text-align:center;
 }
 
-tr:nth-child(even){
+.base{
+    background:#d9edf7;
+    font-weight:bold;
+}
+
+.prefixo{
     background:#f9f9f9;
 }
 
-.alta{
-    background:#ffd9d9 !important;
-}
-
-.media{
-    background:#fff3cd !important;
-}
-
-.baixa{
-    background:#d4edda !important;
-}
-
-.baseBox{
-    margin-top:20px;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-.baseItem{
-    padding:10px 0;
-    border-bottom:1px solid #eee;
+.total{
+    background:#eee;
+    font-weight:bold;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<h1>Painel Operacional Automático</h1>
+<h1>Resumo Geral por Base</h1>
 
-<div class="cards">
+<div id="resumo"></div>
 
-<div class="card">
-<h2 id="totalHoje">0</h2>
-<p>Vencendo Hoje</p>
-</div>
+<h1>Detalhamento por Prefixo</h1>
 
-<div class="card">
-<h2 id="totalAtribuidos">0</h2>
-<p>Total Atribuídos</p>
-</div>
-
-<div class="card">
-<h2 id="totalTrabalhando">0</h2>
-<p>Trabalhando</p>
-</div>
-
-<div class="card">
-<h2 id="totalDeslocando">0</h2>
-<p>Deslocando / Local</p>
-</div>
-
-</div>
-
-<table>
-
-<thead>
-
-<tr>
-<th>Base</th>
-<th>Prefixo</th>
-<th>Data Limite</th>
-<th>Situação</th>
-<th>Tempo</th>
-</tr>
-
-</thead>
-
-<tbody id="tabela"></tbody>
-
-</table>
-
-<div class="baseBox">
-
-<h2>Serviços vencendo hoje por base</h2>
-
-<div id="bases"></div>
-
-</div>
+<div id="detalhamento"></div>
 
 <script>
 
 const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv";
 
 fetch(url)
-.then(response => response.text())
+.then(r => r.text())
 .then(data => {
 
-const linhas = data.split("\n").map(linha => linha.split(","));
+const linhas = data.split("\n").map(l => l.split(","));
 
-const tabela = document.getElementById("tabela");
-
-const hoje = new Date().toLocaleDateString('pt-BR');
-
-let vencendoHoje = 0;
-let atribuidos = 0;
-let trabalhando = 0;
-let deslocando = 0;
-
-let bases = {};
+let datas = [];
+let resumo = {};
+let detalhamento = {};
 
 for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
-let dataLimite = linha[3] || "";
-let prefixo = linha[7] || "";
-let situacao = linha[10] || "";
-let tempo = linha[11] || "";
-let base = linha[12] || "";
+let dataLimite = (linha[3] || "").split(" ")[0];
+let prefixo = linha[7] || "SEM PREFIXO";
+let base = linha[12] || "SEM BASE";
 
-let venceHoje = dataLimite.includes(hoje);
+if(!dataLimite) continue;
 
-if(venceHoje){
-    vencendoHoje++;
+if(!datas.includes(dataLimite)){
+    datas.push(dataLimite);
 }
 
-if(situacao.toLowerCase().includes("atribu")){
-    atribuidos++;
+if(!resumo[base]){
+    resumo[base] = {};
 }
 
-if(situacao.toLowerCase().includes("trabalhando")){
-    trabalhando++;
+if(!resumo[base][dataLimite]){
+    resumo[base][dataLimite] = 0;
 }
 
-if(
-situacao.toLowerCase().includes("deslocando") ||
-situacao.toLowerCase().includes("local")
-){
-    deslocando++;
+resumo[base][dataLimite]++;
+
+if(!detalhamento[base]){
+    detalhamento[base] = {};
 }
 
-if(!bases[base]){
-    bases[base] = 0;
+if(!detalhamento[base][prefixo]){
+    detalhamento[base][prefixo] = {};
 }
 
-if(venceHoje){
-    bases[base]++;
+if(!detalhamento[base][prefixo][dataLimite]){
+    detalhamento[base][prefixo][dataLimite] = 0;
 }
 
-let classe = "";
+detalhamento[base][prefixo][dataLimite]++;
 
-if(venceHoje){
-    classe = "alta";
-}
-else if(situacao.toLowerCase().includes("atribu")){
-    classe = "media";
-}
-else{
-    classe = "baixa";
 }
 
-tabela.innerHTML += `
-<tr class="${classe}">
+datas.sort((a,b)=>{
+
+let pa = a.split("/");
+let pb = b.split("/");
+
+return new Date(pa[2], pa[1]-1, pa[0]) -
+new Date(pb[2], pb[1]-1, pb[0]);
+
+});
+
+let resumoHTML = "<table>";
+
+resumoHTML += "<tr><th>Base</th>";
+
+datas.forEach(d=>{
+resumoHTML += `<th>${d}</th>`;
+});
+
+resumoHTML += "<th>Total</th></tr>";
+
+for(let base in resumo){
+
+let total = 0;
+
+resumoHTML += `<tr class="base"><td>${base}</td>`;
+
+datas.forEach(d=>{
+
+let qtd = resumo[base][d] || 0;
+
+total += qtd;
+
+resumoHTML += `<td>${qtd}</td>`;
+
+});
+
+resumoHTML += `<td>${total}</td></tr>`;
+
+}
+
+resumoHTML += "</table>";
+
+document.getElementById("resumo").innerHTML = resumoHTML;
+
+let detalhamentoHTML = "<table>";
+
+detalhamentoHTML += "<tr><th>Base</th><th>Prefixo</th>";
+
+datas.forEach(d=>{
+detalhamentoHTML += `<th>${d}</th>`;
+});
+
+detalhamentoHTML += "<th>Total</th></tr>";
+
+for(let base in detalhamento){
+
+for(let prefixo in detalhamento[base]){
+
+let total = 0;
+
+detalhamentoHTML += `
+<tr class="prefixo">
 <td>${base}</td>
 <td>${prefixo}</td>
-<td>${dataLimite}</td>
-<td>${situacao}</td>
-<td>${tempo}</td>
-</tr>
 `;
+
+datas.forEach(d=>{
+
+let qtd = detalhamento[base][prefixo][d] || 0;
+
+total += qtd;
+
+detalhamentoHTML += `<td>${qtd}</td>`;
+
+});
+
+detalhamentoHTML += `<td>${total}</td></tr>`;
 
 }
 
-document.getElementById("totalHoje").innerText = vencendoHoje;
-document.getElementById("totalAtribuidos").innerText = atribuidos;
-document.getElementById("totalTrabalhando").innerText = trabalhando;
-document.getElementById("totalDeslocando").innerText = deslocando;
-
-let htmlBases = "";
-
-for(let base in bases){
-
-htmlBases += `
-<div class="baseItem">
-<strong>${base}</strong><br>
-${bases[base]} vencendo hoje
-</div>
-`;
-
 }
 
-document.getElementById("bases").innerHTML = htmlBases;
+detalhamentoHTML += "</table>";
+
+document.getElementById("detalhamento").innerHTML = detalhamentoHTML;
 
 });
 
