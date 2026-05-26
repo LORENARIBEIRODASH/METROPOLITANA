@@ -1,1 +1,88 @@
-index.html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Painel de Acompanhamento</title>
+
+<style>
+
+body{
+    font-family: Arial;
+    background:#f4f4f4;
+    padding:40px;
+}
+
+h1{
+    color:#222;
+}
+
+table{
+    width:100%;
+    background:white;
+    border-collapse: collapse;
+    margin-top:20px;
+}
+
+th, td{
+    padding:15px;
+    border:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#111;
+    color:white;
+}
+
+.bom{
+    color:green;
+    font-weight:bold;
+}
+
+.medio{
+    color:orange;
+    font-weight:bold;
+}
+
+.ruim{
+    color:red;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Painel de Serviços Prioritários</h1>
+
+<table>
+
+<tr>
+<th>Equipe</th>
+<th>Nota</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Equipe Norte</td>
+<td>9.1</td>
+<td class="bom">Excelente</td>
+</tr>
+
+<tr>
+<td>Equipe Sul</td>
+<td>6.5</td>
+<td class="medio">Atenção</td>
+</tr>
+
+<tr>
+<td>Equipe Centro</td>
+<td>4.2</td>
+<td class="ruim">Crítico</td>
+</tr>
+
+</table>
+
+</body>
+</html>
