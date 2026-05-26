@@ -248,6 +248,9 @@ for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
+let numero =
+(linha[2] || "").trim();
+
 let dataLimite =
 (linha[3] || "").trim().split(" ")[0];
 
@@ -260,11 +263,14 @@ let situacao =
 let base =
 (linha[12] || "").trim();
 
-if(!situacao.includes("atribu")){
+if(
+!situacao.includes("atribu") &&
+!situacao.includes("prepar")
+){
 continue;
 }
 
-if(!dataLimite || !base || !prefixo){
+if(!numero || !dataLimite || !base){
 continue;
 }
 
@@ -287,10 +293,10 @@ resumoDias[base] = {};
 }
 
 if(!resumoDias[base][dataLimite]){
-resumoDias[base][dataLimite] = [];
+resumoDias[base][dataLimite] = 0;
 }
 
-resumoDias[base][dataLimite].push(prefixo);
+resumoDias[base][dataLimite]++;
 
 }
 
@@ -325,7 +331,11 @@ let situacao =
 (linha[9] || "").trim().toLowerCase();
 
 if(
-situacao.includes("atribu") &&
+(
+situacao.includes("atribu") ||
+situacao.includes("prepar")
+)
+&&
 dataLimite === dataMaisProxima
 ){
 
@@ -490,7 +500,7 @@ htmlDias += `<tr><td>${base}</td>`;
 proximasDatas.forEach(data=>{
 
 let qtd =
-(resumoDias[base][data] || []).length;
+resumoDias[base][data] || 0;
 
 htmlDias += `<td>${qtd}</td>`;
 
@@ -509,7 +519,7 @@ let totalDia = 0;
 for(let base in resumoDias){
 
 totalDia +=
-(resumoDias[base][data] || []).length;
+resumoDias[base][data] || 0;
 
 }
 
