@@ -59,6 +59,25 @@ body{
     margin-top:10px;
 }
 
+/* MENU */
+
+.menu{
+    display:flex;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.menu button{
+    padding:15px 25px;
+    border:none;
+    border-radius:12px;
+    background:#0f172a;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
 /* TOPO */
 
 .topo{
@@ -81,25 +100,6 @@ h1{
     margin-top:10px;
     font-size:14px;
     color:#cbd5e1;
-}
-
-/* MENU */
-
-.menu{
-    display:flex;
-    gap:15px;
-    margin-bottom:30px;
-}
-
-.menu button{
-    padding:15px 25px;
-    border:none;
-    border-radius:12px;
-    background:#0f172a;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-    font-weight:bold;
 }
 
 /* CARDS */
@@ -340,25 +340,6 @@ ABA ANALYTICS
 
 <div id="analytics" style="display:none;">
 
-<div class="cards">
-
-<div class="card">
-<h2 id="baseCritica">0</h2>
-<p>Base Mais Crítica</p>
-</div>
-
-<div class="card">
-<h2 id="diaCritico">0</h2>
-<p>Maior Volume Diário</p>
-</div>
-
-<div class="card">
-<h2 id="mediaServicos">0</h2>
-<p>Média Serviços/Dia</p>
-</div>
-
-</div>
-
 <div class="bloco">
 
 <h3>Volume de Serviços por Data</h3>
@@ -367,29 +348,11 @@ ABA ANALYTICS
 
 </div>
 
-<div class="bloco">
-
-<h3>Ranking de Bases</h3>
-
-<div id="rankingBases"></div>
-
-</div>
-
-<div class="bloco">
-
-<h3>Top Prefixos</h3>
-
-<div id="rankingPrefixos"></div>
-
-</div>
-
 </div>
 
 <script>
 
-/* =========================
-LOGIN
-========================= */
+/* LOGIN */
 
 function validarSenha(){
 
@@ -410,9 +373,7 @@ document.getElementById("erroSenha")
 
 }
 
-/* =========================
-ABAS
-========================= */
+/* ABAS */
 
 function mostrarAba(aba){
 
@@ -427,9 +388,7 @@ document.getElementById(aba)
 
 }
 
-/* =========================
-PLANILHA
-========================= */
+/* PLANILHA */
 
 const url =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv&t=" + new Date().getTime();
@@ -451,14 +410,10 @@ let resumoDias = {};
 let servicosRecentes = {};
 
 let totalPorData = {};
-let totalPorBase = {};
-let totalPorPrefixo = {};
 
 let totalServicos = 0;
 
-/* =========================
-LEITURA
-========================= */
+/* LEITURA */
 
 for(let i = 1; i < linhas.length; i++){
 
@@ -490,7 +445,13 @@ if(!datas.includes(dataLimite)){
 datas.push(dataLimite);
 }
 
-/* BASES */
+/* GRAFICO */
+
+if(!totalPorData[dataLimite]){
+totalPorData[dataLimite] = 0;
+}
+
+totalPorData[dataLimite]++;
 
 if(base){
 
@@ -503,8 +464,6 @@ prefixosPorBase[base].add(prefixo);
 }
 
 }
-
-/* RESUMO DIAS */
 
 if(base){
 
@@ -520,39 +479,9 @@ resumoDias[base][dataLimite]++;
 
 }
 
-/* ANALYTICS */
-
-if(!totalPorData[dataLimite]){
-totalPorData[dataLimite] = 0;
 }
 
-totalPorData[dataLimite]++;
-
-if(base){
-
-if(!totalPorBase[base]){
-totalPorBase[base] = 0;
-}
-
-totalPorBase[base]++;
-
-}
-
-if(prefixo){
-
-if(!totalPorPrefixo[prefixo]){
-totalPorPrefixo[prefixo] = 0;
-}
-
-totalPorPrefixo[prefixo]++;
-
-}
-
-}
-
-/* =========================
-ORDENAR DATAS
-========================= */
+/* DATAS */
 
 datas.sort((a,b)=>{
 
@@ -569,9 +498,7 @@ const dataMaisProxima = datas[0];
 document.getElementById("dataMaisRecente")
 .innerText = "Data: " + dataMaisProxima;
 
-/* =========================
-SERVIÇOS HOJE
-========================= */
+/* SERVIÇOS HOJE */
 
 let totalMaisProxima = 0;
 
@@ -608,9 +535,7 @@ document.getElementById("prefixos")
 document.getElementById("totalServicos")
 .innerText = totalServicos;
 
-/* =========================
-FISCAIS
-========================= */
+/* PREFIXOS */
 
 const fiscais = {
 
@@ -676,9 +601,7 @@ htmlPrefixos += "</table>";
 document.getElementById("prefixosBase")
 .innerHTML = htmlPrefixos;
 
-/* =========================
-SERVIÇOS RECENTES
-========================= */
+/* RECENTES */
 
 let htmlRecentes = "<table>";
 
@@ -715,9 +638,7 @@ htmlRecentes += "</table>";
 document.getElementById("servicosRecentes")
 .innerHTML = htmlRecentes;
 
-/* =========================
-PRÓXIMOS DIAS
-========================= */
+/* PROXIMOS DIAS */
 
 let proximasDatas = datas.slice(0,5);
 
@@ -774,9 +695,7 @@ htmlDias += "</table>";
 document.getElementById("proximosDias")
 .innerHTML = htmlDias;
 
-/* =========================
-ÚLTIMA ATUALIZAÇÃO
-========================= */
+/* ÚLTIMA ATUALIZAÇÃO */
 
 let ultimaLinha = linhas[1];
 
@@ -787,58 +706,7 @@ document.getElementById("ultimaAtualizacao")
 .innerText =
 "Última atualização da planilha: " + atualizacao;
 
-/* =========================
-ANALYTICS
-========================= */
-
-let maiorBase = "";
-let maiorQtdBase = 0;
-
-for(let base in totalPorBase){
-
-if(totalPorBase[base] > maiorQtdBase){
-
-maiorQtdBase =
-totalPorBase[base];
-
-maiorBase = base;
-
-}
-
-}
-
-document.getElementById("baseCritica")
-.innerText = maiorBase;
-
-let maiorDia = "";
-let maiorQtdDia = 0;
-
-for(let data in totalPorData){
-
-if(totalPorData[data] > maiorQtdDia){
-
-maiorQtdDia =
-totalPorData[data];
-
-maiorDia = data;
-
-}
-
-}
-
-document.getElementById("diaCritico")
-.innerText = maiorDia;
-
-let media =
-Math.round(
-totalServicos /
-Object.keys(totalPorData).length
-);
-
-document.getElementById("mediaServicos")
-.innerText = media;
-
-/* GRÁFICO */
+/* GRAFICO */
 
 let htmlGrafico = "";
 
@@ -851,14 +719,17 @@ htmlGrafico += `
 
 <div style="
 margin-bottom:18px;
+background:white;
+padding:15px;
+border-radius:12px;
 ">
 
 <div style="
-margin-bottom:6px;
+margin-bottom:8px;
 font-weight:bold;
 color:#1e3a8a;
 ">
-${data} • ${totalPorData[data]}
+${data} • ${totalPorData[data]} serviços
 </div>
 
 <div style="
@@ -878,83 +749,9 @@ border-radius:10px;
 document.getElementById("graficoDatas")
 .innerHTML = htmlGrafico;
 
-/* RANKING BASES */
-
-let rankingBases =
-Object.entries(totalPorBase)
-.sort((a,b)=> b[1]-a[1])
-.slice(0,10);
-
-let htmlBases = "<table>";
-
-htmlBases += `
-<tr>
-<th>Base</th>
-<th>Total Serviços</th>
-</tr>
-`;
-
-rankingBases.forEach(item=>{
-
-htmlBases += `
-<tr>
-<td>${item[0]}</td>
-<td>${item[1]}</td>
-</tr>
-`;
-
-});
-
-htmlBases += "</table>";
-
-document.getElementById("rankingBases")
-.innerHTML = htmlBases;
-
-/* RANKING PREFIXOS */
-
-let rankingPrefixos =
-Object.entries(totalPorPrefixo)
-.sort((a,b)=> b[1]-a[1])
-.slice(0,10);
-
-let htmlPrefixosRanking = "<table>";
-
-htmlPrefixosRanking += `
-<tr>
-<th>Prefixo</th>
-<th>Total</th>
-</tr>
-`;
-
-rankingPrefixos.forEach(item=>{
-
-htmlPrefixosRanking += `
-<tr>
-<td>${item[0]}</td>
-<td>${item[1]}</td>
-</tr>
-`;
-
-});
-
-htmlPrefixosRanking += "</table>";
-
-document.getElementById("rankingPrefixos")
-.innerHTML = htmlPrefixosRanking;
-
 }
 
 });
-
-/* =========================
-AUTO ATUALIZAÇÃO
-========================= */
-
-setInterval(() => {
-
-location.reload();
-
-}, 30000);
 
 </script>
 
