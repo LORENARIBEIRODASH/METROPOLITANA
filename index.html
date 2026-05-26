@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
 <meta charset="UTF-8">
-<title>Painel de Acompanhamento</title>
+<title>Painel de Serviços</title>
 
 <style>
 
@@ -34,8 +35,8 @@ th{
     color:white;
 }
 
-.bom{
-    color:green;
+.alto{
+    color:red;
     font-weight:bold;
 }
 
@@ -44,8 +45,8 @@ th{
     font-weight:bold;
 }
 
-.ruim{
-    color:red;
+.baixo{
+    color:green;
     font-weight:bold;
 }
 
@@ -59,27 +60,31 @@ th{
 <table>
 
 <tr>
+<th>Base</th>
 <th>Equipe</th>
-<th>Nota</th>
-<th>Status</th>
+<th>Quantidade de Serviços</th>
+<th>Prioridade</th>
 </tr>
 
 <tr>
+<td>Formosa</td>
 <td>Equipe Norte</td>
-<td>9.1</td>
-<td class="bom">Excelente</td>
+<td>18</td>
+<td class="alto">Alta</td>
 </tr>
 
 <tr>
+<td>Brasília</td>
 <td>Equipe Sul</td>
-<td>6.5</td>
-<td class="medio">Atenção</td>
+<td>9</td>
+<td class="medio">Média</td>
 </tr>
 
 <tr>
+<td>Goiânia</td>
 <td>Equipe Centro</td>
-<td>4.2</td>
-<td class="ruim">Crítico</td>
+<td>3</td>
+<td class="baixo">Baixa</td>
 </tr>
 
 </table>
