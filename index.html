@@ -7,6 +7,8 @@
 
 <title>COMERCIAL METROPOLITANA</title>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 <style>
 
 body{
@@ -226,14 +228,14 @@ border-radius:15px;
 const url =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv";
 
-fetch(url)
+Papa.parse(url, {
 
-.then(r => r.text())
+download: true,
+header: false,
 
-.then(data => {
+complete: function(resultado) {
 
-const linhas =
-data.split("\n").map(l => l.split(","));
+const linhas = resultado.data;
 
 let datas = [];
 let prefixosSet = new Set();
@@ -287,10 +289,10 @@ resumoDias[base] = {};
 }
 
 if(!resumoDias[base][dataLimite]){
-resumoDias[base][dataLimite] = [];
+resumoDias[base][dataLimite] = 0;
 }
 
-resumoDias[base][dataLimite].push(prefixo);
+resumoDias[base][dataLimite]++;
 
 }
 
@@ -490,7 +492,7 @@ htmlDias += `<tr><td>${base}</td>`;
 proximasDatas.forEach(data=>{
 
 let qtd =
-(resumoDias[base][data] || []).length;
+resumoDias[base][data] || 0;
 
 htmlDias += `<td>${qtd}</td>`;
 
@@ -509,7 +511,7 @@ let totalDia = 0;
 for(let base in resumoDias){
 
 totalDia +=
-(resumoDias[base][data] || []).length;
+resumoDias[base][data] || 0;
 
 }
 
@@ -523,6 +525,8 @@ htmlDias += "</table>";
 
 document.getElementById("proximosDias").innerHTML =
 htmlDias;
+
+}
 
 });
 
