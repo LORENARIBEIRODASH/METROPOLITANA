@@ -44,7 +44,7 @@ h1{
 
 .card h2{
     margin:0;
-    font-size:40px;
+    font-size:42px;
 }
 
 .card p{
@@ -88,11 +88,6 @@ tr:nth-child(even){
     background:#f5f5f5;
 }
 
-.responsavel{
-    background:#dbeafe;
-    font-weight:bold;
-}
-
 </style>
 
 </head>
@@ -110,47 +105,79 @@ ACOMPANHAMENTO EM TEMPO REAL
 <div class="card">
 <h2 id="servicosHoje">0</h2>
 <p>Serviços vencendo na data mais próxima</p>
+<small id="dataMaisRecente"></small>
 </div>
 
 <div class="card">
 <h2 id="prefixos">0</h2>
-<p>Prefixos alocados</p>
+<p>Quantidade de Prefixos Alocados</p>
 </div>
 
 <div class="card">
 <h2 id="totalServicos">0</h2>
-<p>Total de serviços atribuídos</p>
+<p>Total de Serviços Atribuídos</p>
 </div>
 
 </div>
 
 <div class="bloco">
 
-<h3>Responsáveis por Base</h3>
+<h3>Responsáveis Operacionais</h3>
 
-<table>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
 
-<tr>
-<th>Responsável</th>
-<th>Bases</th>
-</tr>
+<div style="
+background:#1e3a8a;
+color:white;
+padding:20px;
+border-radius:15px;
+">
 
-<tr class="responsavel">
-<td>IVAN</td>
-<td>19 / 24 / 51 / 66 / 92</td>
-</tr>
+<h2 style="margin-top:0;">IVAN</h2>
 
-<tr>
-<td>RAFAEL</td>
-<td>71 / 50 / 61 / 52</td>
-</tr>
+<p><strong>Bases:</strong></p>
 
-<tr class="responsavel">
-<td>LUIS</td>
-<td>09 / 10 / 20 / 21 / 22 / 18</td>
-</tr>
+<p>
+19 / 24 / 51 / 66 / 92
+</p>
 
-</table>
+</div>
+
+<div style="
+background:#2563eb;
+color:white;
+padding:20px;
+border-radius:15px;
+">
+
+<h2 style="margin-top:0;">RAFAEL</h2>
+
+<p><strong>Bases:</strong></p>
+
+<p>
+71 / 50 / 61 / 52
+</p>
+
+</div>
+
+<div style="
+background:#0f172a;
+color:white;
+padding:20px;
+border-radius:15px;
+">
+
+<h2 style="margin-top:0;">LUIS</h2>
+
+<p><strong>Bases:</strong></p>
+
+<p>
+09 / 10 / 20 / 21 / 22 / 18
+</p>
+
+</div>
+
+</div>
 
 </div>
 
@@ -202,7 +229,6 @@ for(let i = 1; i < linhas.length; i++){
 let linha = linhas[i];
 
 let dataLimite = (linha[3] || "").trim().split(" ")[0];
-let tipoServico = (linha[5] || "").trim();
 let prefixo = (linha[7] || "").trim();
 let situacao = (linha[9] || "").trim().toLowerCase();
 let base = (linha[12] || "").trim();
@@ -252,6 +278,9 @@ new Date(pb[2], pb[1]-1, pb[0]);
 });
 
 const dataMaisProxima = datas[0];
+
+document.getElementById("dataMaisRecente").innerText =
+"Data: " + dataMaisProxima;
 
 let totalMaisProxima = 0;
 
