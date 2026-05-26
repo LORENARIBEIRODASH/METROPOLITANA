@@ -231,6 +231,7 @@ const url =
 Papa.parse(url, {
 
 download: true,
+header: true,
 
 complete: function(resultado) {
 
@@ -245,24 +246,34 @@ let servicosRecentes = {};
 
 let totalServicos = 0;
 
-for(let i = 1; i < linhas.length; i++){
+for(let i = 0; i < linhas.length; i++){
 
 let linha = linhas[i];
 
 let numero =
-(linha[2] || "").trim();
+(linha["Numero"] || "").toString().trim();
 
 let dataLimite =
-(linha[3] || "").trim().split(" ")[0];
+(linha["Data Limite"] || "")
+.toString()
+.trim()
+.split(" ")[0];
 
 let prefixo =
-(linha[7] || "").trim();
+(linha["Prefixo"] || "")
+.toString()
+.trim();
 
 let situacao =
-(linha[9] || "").trim().toLowerCase();
+(linha["Situação atribuída"] || "")
+.toString()
+.toLowerCase()
+.trim();
 
 let base =
-(linha[12] || "").trim();
+(linha["Base"] || "")
+.toString()
+.trim();
 
 if(
 !situacao.includes("atribuida") &&
@@ -274,7 +285,11 @@ if(
 continue;
 }
 
-if(!numero || !dataLimite || !base || !prefixo){
+if(
+!numero ||
+!dataLimite ||
+!base
+){
 continue;
 }
 
@@ -290,7 +305,9 @@ if(!prefixosPorBase[base]){
 prefixosPorBase[base] = new Set();
 }
 
+if(prefixo){
 prefixosPorBase[base].add(prefixo);
+}
 
 if(!resumoDias[base]){
 resumoDias[base] = {};
@@ -321,21 +338,31 @@ document.getElementById("dataMaisRecente").innerText =
 
 let totalMaisProxima = 0;
 
-for(let i = 1; i < linhas.length; i++){
+for(let i = 0; i < linhas.length; i++){
 
 let linha = linhas[i];
 
 let numero =
-(linha[2] || "").trim();
+(linha["Numero"] || "")
+.toString()
+.trim();
 
 let dataLimite =
-(linha[3] || "").trim().split(" ")[0];
+(linha["Data Limite"] || "")
+.toString()
+.trim()
+.split(" ")[0];
 
 let prefixo =
-(linha[7] || "").trim();
+(linha["Prefixo"] || "")
+.toString()
+.trim();
 
 let situacao =
-(linha[9] || "").trim().toLowerCase();
+(linha["Situação atribuída"] || "")
+.toString()
+.toLowerCase()
+.trim();
 
 if(
 (
