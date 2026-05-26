@@ -3,26 +3,54 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Painel Dinâmico Operacional</title>
+<title>Painel Operacional</title>
 
 <style>
 
 body{
     font-family:Arial;
     background:#f4f4f4;
+    margin:0;
     padding:20px;
 }
 
 h1{
-    margin-top:40px;
     margin-bottom:20px;
+}
+
+h2{
+    margin-top:40px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card h3{
+    margin:0;
+    font-size:35px;
+}
+
+.card p{
+    margin-top:10px;
+    color:#666;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
-    margin-bottom:40px;
     background:white;
+    margin-bottom:30px;
     box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
@@ -39,43 +67,21 @@ td{
     text-align:center;
 }
 
+tr:nth-child(even){
+    background:#f9f9f9;
+}
+
 .base{
     background:#d9edf7;
     font-weight:bold;
 }
 
 .prefixo{
-    background:#f9f9f9;
+    background:#fff3cd;
 }
 
-.total{
-    background:#eee;
-    font-weight:bold;
-}
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-    margin-bottom:30px;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    text-align:center;
-}
-
-.card h2{
-    margin:0;
-    font-size:35px;
-}
-
-.card p{
-    margin-top:10px;
-    color:#666;
+.detalhe{
+    background:#fff;
 }
 
 </style>
@@ -89,38 +95,38 @@ td{
 <div class="cards">
 
 <div class="card">
-<h2 id="totalServicos">0</h2>
-<p>Total de Serviços</p>
+<h3 id="servicosHoje">0</h3>
+<p>Serviços vencendo na data mais recente</p>
 </div>
 
 <div class="card">
-<h2 id="totalBases">0</h2>
-<p>Total de Bases</p>
+<h3 id="equipesAtribuidas">0</h3>
+<p>Total de equipes atribuídas</p>
 </div>
 
 <div class="card">
-<h2 id="totalPrefixos">0</h2>
-<p>Total de Prefixos</p>
+<h3 id="basesAtribuidas">0</h3>
+<p>Total de bases atribuídas</p>
 </div>
 
 <div class="card">
-<h2 id="totalDatas">0</h2>
-<p>Total de Datas</p>
+<h3 id="totalServicos">0</h3>
+<p>Total geral de serviços atribuídos</p>
 </div>
 
 </div>
 
-<h1>Resumo Geral por Base</h1>
+<h2>Resumo Geral por Base</h2>
 
-<div id="resumo"></div>
+<div id="resumoBase"></div>
 
-<h1>Detalhamento por Prefixo</h1>
+<h2>Resumo Dinâmico por Data</h2>
+
+<div id="resumoDinamico"></div>
+
+<h2>Serviços da Data Mais Recente por Equipe</h2>
 
 <div id="detalhamento"></div>
-
-<h1>Data Limite por Base</h1>
-
-<div id="vencimentos"></div>
 
 <script>
 
@@ -134,33 +140,37 @@ const linhas = data.split("\n").map(l => l.split(","));
 
 let datas = [];
 let resumo = {};
+let equipes = new Set();
+let bases = new Set();
+
 let detalhamento = {};
 
 let totalServicos = 0;
-
-let basesSet = new Set();
-let prefixosSet = new Set();
 
 for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
-let dataLimite = (linha[3] || "").split(" ")[0];
-let prefixo = linha[7] || "SEM PREFIXO";
-let base = linha[12] || "SEM BASE";
+let dataLimite = (linha[3] || "").trim().split(" ")[0];
+let tipoServico = (linha[5] || "").trim();
+let prefixo = (linha[7] || "").trim();
+let situacao = (linha[9] || "").trim().toLowerCase();
+let base = (linha[12] || "").trim();
 
-let quantidade = parseInt(linha[0]) || 1;
+if(!situacao.includes("atribu")){
+    continue;
+}
 
 if(!dataLimite) continue;
-
-basesSet.add(base);
-prefixosSet.add(prefixo);
-
-totalServicos += quantidade;
 
 if(!datas.includes(dataLimite)){
     datas.push(dataLimite);
 }
+
+equipes.add(prefixo);
+bases.add(base);
+
+totalServicos++;
 
 if(!resumo[base]){
     resumo[base] = {};
@@ -170,21 +180,7 @@ if(!resumo[base][dataLimite]){
     resumo[base][dataLimite] = 0;
 }
 
-resumo[base][dataLimite] += quantidade;
-
-if(!detalhamento[base]){
-    detalhamento[base] = {};
-}
-
-if(!detalhamento[base][prefixo]){
-    detalhamento[base][prefixo] = {};
-}
-
-if(!detalhamento[base][prefixo][dataLimite]){
-    detalhamento[base][prefixo][dataLimite] = 0;
-}
-
-detalhamento[base][prefixo][dataLimite] += quantidade;
+resumo[base][dataLimite]++;
 
 }
 
@@ -198,102 +194,91 @@ new Date(pb[2], pb[1]-1, pb[0]);
 
 });
 
+const dataMaisRecente = datas[datas.length - 1];
+
+let servicosHoje = 0;
+
+for(let i = 1; i < linhas.length; i++){
+
+let linha = linhas[i];
+
+let dataLimite = (linha[3] || "").trim().split(" ")[0];
+let tipoServico = (linha[5] || "").trim();
+let prefixo = (linha[7] || "").trim();
+let situacao = (linha[9] || "").trim().toLowerCase();
+let base = (linha[12] || "").trim();
+
+if(
+situacao.includes("atribu") &&
+dataLimite === dataMaisRecente
+){
+
+servicosHoje++;
+
+if(!detalhamento[prefixo]){
+    detalhamento[prefixo] = [];
+}
+
+detalhamento[prefixo].push({
+tipo: tipoServico,
+data: dataLimite,
+base: base
+});
+
+}
+
+}
+
+document.getElementById("servicosHoje").innerText = servicosHoje;
+document.getElementById("equipesAtribuidas").innerText = equipes.size;
+document.getElementById("basesAtribuidas").innerText = bases.size;
 document.getElementById("totalServicos").innerText = totalServicos;
-document.getElementById("totalBases").innerText = basesSet.size;
-document.getElementById("totalPrefixos").innerText = prefixosSet.size;
-document.getElementById("totalDatas").innerText = datas.length;
 
 let resumoHTML = "<table>";
 
-resumoHTML += "<tr><th>Base</th>";
-
-datas.forEach(d=>{
-resumoHTML += `<th>${d}</th>`;
-});
-
-resumoHTML += "<th>Total Geral</th></tr>";
+resumoHTML += `
+<tr>
+<th>Base</th>
+<th>Data</th>
+<th>Quantidade</th>
+</tr>
+`;
 
 for(let base in resumo){
 
-let total = 0;
+for(let data in resumo[base]){
 
-resumoHTML += `<tr class="base"><td>${base}</td>`;
+resumoHTML += `
+<tr class="base">
+<td>${base}</td>
+<td>${data}</td>
+<td>${resumo[base][data]}</td>
+</tr>
+`;
 
-datas.forEach(d=>{
-
-let qtd = resumo[base][d] || 0;
-
-total += qtd;
-
-resumoHTML += `<td>${qtd}</td>`;
-
-});
-
-resumoHTML += `<td>${total}</td></tr>`;
+}
 
 }
 
 resumoHTML += "</table>";
 
-document.getElementById("resumo").innerHTML = resumoHTML;
+document.getElementById("resumoBase").innerHTML = resumoHTML;
 
-let detalhamentoHTML = "<table>";
+let dinamicoHTML = "<table>";
 
-detalhamentoHTML += "<tr><th>Base</th><th>Prefixo</th>";
-
-datas.forEach(d=>{
-detalhamentoHTML += `<th>${d}</th>`;
-});
-
-detalhamentoHTML += "<th>Total Geral</th></tr>";
-
-for(let base in detalhamento){
-
-for(let prefixo in detalhamento[base]){
-
-let total = 0;
-
-detalhamentoHTML += `
-<tr class="prefixo">
-<td>${base}</td>
-<td>${prefixo}</td>
-`;
+dinamicoHTML += "<tr><th>Base</th>";
 
 datas.forEach(d=>{
-
-let qtd = detalhamento[base][prefixo][d] || 0;
-
-total += qtd;
-
-detalhamentoHTML += `<td>${qtd}</td>`;
-
+dinamicoHTML += `<th>${d}</th>`;
 });
 
-detalhamentoHTML += `<td>${total}</td></tr>`;
-
-}
-
-}
-
-detalhamentoHTML += "</table>";
-
-document.getElementById("detalhamento").innerHTML = detalhamentoHTML;
-
-let vencHTML = "<table>";
-
-vencHTML += "<tr><th>Base</th>";
-
-datas.forEach(d=>{
-vencHTML += `<th>${d}</th>`;
-});
-
-vencHTML += "<th>Total Geral</th></tr>";
+dinamicoHTML += "<th>Total</th></tr>";
 
 for(let base in resumo){
 
 let total = 0;
 
-vencHTML += `<tr class="base"><td>${base}</td>`;
+dinamicoHTML += `<tr><td>${base}</td>`;
 
 datas.forEach(d=>{
 
@@ -301,17 +286,53 @@ let qtd = resumo[base][d] || 0;
 
 total += qtd;
 
-vencHTML += `<td>${qtd}</td>`;
+dinamicoHTML += `<td>${qtd}</td>`;
 
 });
 
-vencHTML += `<td>${total}</td></tr>`;
+dinamicoHTML += `<td><strong>${total}</strong></td></tr>`;
 
 }
 
-vencHTML += "</table>";
+dinamicoHTML += "</table>";
 
-document.getElementById("vencimentos").innerHTML = vencHTML;
+document.getElementById("resumoDinamico").innerHTML = dinamicoHTML;
+
+let detalheHTML = "";
+
+for(let prefixo in detalhamento){
+
+detalheHTML += `
+<table>
+
+<tr class="prefixo">
+<th colspan="3">${prefixo}</th>
+</tr>
+
+<tr>
+<th>Tipo Serviço</th>
+<th>Data Limite</th>
+<th>Base</th>
+</tr>
+`;
+
+detalhamento[prefixo].forEach(servico=>{
+
+detalheHTML += `
+<tr class="detalhe">
+<td>${servico.tipo}</td>
+<td>${servico.data}</td>
+<td>${servico.base}</td>
+</tr>
+`;
+
+});
+
+detalheHTML += "</table>";
+
+}
+
+document.getElementById("detalhamento").innerHTML = detalheHTML;
 
 });
 
