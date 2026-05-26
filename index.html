@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Painel Operacional</title>
+<title>Painel Operacional Automático</title>
 
 <style>
 
@@ -15,7 +15,6 @@ body{
 }
 
 h1{
-    color:#111;
     margin-bottom:20px;
 }
 
@@ -31,11 +30,12 @@ h1{
     padding:20px;
     border-radius:10px;
     box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    text-align:center;
 }
 
 .card h2{
     margin:0;
-    font-size:32px;
+    font-size:35px;
 }
 
 .card p{
@@ -72,14 +72,15 @@ td{
     padding:20px;
     border-radius:10px;
     box-shadow:0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom:20px;
 }
 
-.base-box h3{
-    margin-top:0;
+.base-item{
+    padding:10px 0;
+    border-bottom:1px solid #eee;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -105,7 +106,7 @@ td{
 
 <div class="card">
 <h2 id="deslocando">0</h2>
-<p>Equipes deslocando/local</p>
+<p>Deslocando / Local</p>
 </div>
 
 </div>
@@ -114,19 +115,21 @@ td{
 
 <div>
 
-<table id="tabela">
+<table>
+
 <thead>
+
 <tr>
 <th>Base</th>
 <th>Prefixo</th>
-<th>Vencendo Hoje</th>
-<th>Total Serviços</th>
+<th>Vence Hoje</th>
 <th>Situação</th>
 <th>Tempo</th>
 </tr>
+
 </thead>
 
-<tbody></tbody>
+<tbody id="tabela"></tbody>
 
 </table>
 
@@ -135,8 +138,11 @@ td{
 <div>
 
 <div class="base-box">
-<h3>Serviços vencendo por Base</h3>
+
+<h3>Vencendo Hoje por Base</h3>
+
 <div id="bases"></div>
+
 </div>
 
 </div>
@@ -151,9 +157,9 @@ fetch(url)
 .then(response => response.text())
 .then(data => {
 
-const linhas = data.split("\n").map(linha => linha.split(","));
+const linhas = data.split("\n").map(l => l.split(","));
 
-const tbody = document.querySelector("#tabela tbody");
+const tabela = document.getElementById("tabela");
 
 let hoje = new Date().toLocaleDateString('pt-BR');
 
@@ -168,13 +174,15 @@ for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
-let dataLimite = linha[3];
-let prefixo = linha[7];
-let situacao = linha[10];
-let tempo = linha[11];
-let base = linha[12];
+let dataLimite = linha[3] || "";
+let prefixo = linha[7] || "";
+let situacao = linha[10] || "";
+let tempo = linha[11] || "";
+let base = linha[12] || "";
 
-if(dataLimite.includes(hoje)){
+let venceHoje = dataLimite.includes(hoje);
+
+if(venceHoje){
     vencendoHoje++;
 }
 
@@ -197,16 +205,15 @@ if(!bases[base]){
     bases[base] = 0;
 }
 
-if(dataLimite.includes(hoje)){
+if(venceHoje){
     bases[base]++;
 }
 
-tbody.innerHTML += `
+tabela.innerHTML += `
 <tr>
 <td>${base}</td>
 <td>${prefixo}</td>
-<td>${dataLimite.includes(hoje) ? "SIM" : "NÃO"}</td>
-<td>1</td>
+<td>${venceHoje ? "SIM" : "NÃO"}</td>
 <td>${situacao}</td>
 <td>${tempo}</td>
 </tr>
@@ -224,9 +231,10 @@ let basesHTML = "";
 for(let base in bases){
 
 basesHTML += `
-<p>
-<strong>${base}</strong>: ${bases[base]}
-</p>
+<div class="base-item">
+<strong>${base}</strong><br>
+${bases[base]} vencendo hoje
+</div>
 `;
 
 }
