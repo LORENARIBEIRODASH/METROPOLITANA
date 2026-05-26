@@ -7,6 +7,8 @@
 
 <title>COMERCIAL METROPOLITANA</title>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 <style>
 
 body{
@@ -23,7 +25,7 @@ body{
 
 h1{
     margin:0;
-    font-size:60px;
+    font-size:58px;
     font-weight:bold;
 }
 
@@ -41,16 +43,15 @@ h1{
 }
 
 .card{
-    background:rgba(255,255,255,0.1);
-    backdrop-filter:blur(8px);
-    border-radius:15px;
+    background:rgba(255,255,255,0.12);
+    border-radius:18px;
     padding:25px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    backdrop-filter:blur(8px);
 }
 
 .card h2{
     margin:0;
-    font-size:42px;
+    font-size:48px;
 }
 
 .card p{
@@ -60,17 +61,16 @@ h1{
 
 .bloco{
     background:white;
-    color:#111;
-    border-radius:15px;
-    padding:20px;
+    color:#111827;
+    border-radius:18px;
+    padding:25px;
     margin-bottom:30px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
 .bloco h3{
     margin-top:0;
     color:#1e3a8a;
-    font-size:26px;
+    font-size:28px;
 }
 
 table{
@@ -82,22 +82,48 @@ table{
 th{
     background:#1e3a8a;
     color:white;
-    padding:10px;
+    padding:12px;
+    font-size:14px;
 }
 
 td{
-    border:1px solid #ddd;
-    padding:8px;
+    border:1px solid #e5e7eb;
+    padding:10px;
     text-align:center;
+    font-size:14px;
 }
 
 tr:nth-child(even){
-    background:#f5f5f5;
+    background:#f8fafc;
 }
 
 .total{
     background:#dbeafe;
     font-weight:bold;
+}
+
+.grid-fiscais{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.fiscal{
+    padding:20px;
+    border-radius:18px;
+    color:white;
+}
+
+.ivan{
+    background:#1e3a8a;
+}
+
+.rafael{
+    background:#2563eb;
+}
+
+.luis{
+    background:#0f172a;
 }
 
 </style>
@@ -126,12 +152,12 @@ ACOMPANHAMENTO EM TEMPO REAL
 
 <div class="card">
 <h2 id="prefixos">0</h2>
-<p>Quantidade de Prefixos Alocados</p>
+<p>Quantidade de Prefixos</p>
 </div>
 
 <div class="card">
 <h2 id="totalServicos">0</h2>
-<p>Total de Serviços Atribuídos</p>
+<p>Total de Serviços</p>
 </div>
 
 </div>
@@ -140,57 +166,21 @@ ACOMPANHAMENTO EM TEMPO REAL
 
 <h3>Responsáveis Operacionais</h3>
 
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+<div class="grid-fiscais">
 
-<div style="
-background:#1e3a8a;
-color:white;
-padding:20px;
-border-radius:15px;
-">
-
+<div class="fiscal ivan">
 <h2>IVAN</h2>
-
-<p><strong>Bases:</strong></p>
-
-<p>
-19 / 24 / 51 / 66 / 92
-</p>
-
+<p>19 / 24 / 51 / 66 / 92</p>
 </div>
 
-<div style="
-background:#2563eb;
-color:white;
-padding:20px;
-border-radius:15px;
-">
-
+<div class="fiscal rafael">
 <h2>RAFAEL</h2>
-
-<p><strong>Bases:</strong></p>
-
-<p>
-71 / 50 / 61 / 52
-</p>
-
+<p>71 / 50 / 61 / 52</p>
 </div>
 
-<div style="
-background:#0f172a;
-color:white;
-padding:20px;
-border-radius:15px;
-">
-
+<div class="fiscal luis">
 <h2>LUIS</h2>
-
-<p><strong>Bases:</strong></p>
-
-<p>
-09 / 10 / 20 / 21 / 22 / 18
-</p>
-
+<p>09 / 10 / 20 / 21 / 22 / 18</p>
 </div>
 
 </div>
@@ -226,14 +216,13 @@ border-radius:15px;
 const url =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv";
 
-fetch(url)
+Papa.parse(url, {
 
-.then(r => r.text())
+download:true,
 
-.then(data => {
+complete:function(resultado){
 
-const linhas =
-data.split("\n").map(l => l.split(","));
+const linhas = resultado.data;
 
 let datas = [];
 let prefixosSet = new Set();
@@ -243,6 +232,10 @@ let resumoDias = {};
 let servicosRecentes = {};
 
 let totalServicos = 0;
+
+/* =========================
+LEITURA PLANILHA
+========================= */
 
 for(let i = 1; i < linhas.length; i++){
 
@@ -257,26 +250,22 @@ let dataLimite =
 let prefixo =
 (linha[7] || "").trim();
 
-let situacao =
-(linha[9] || "").trim().toLowerCase();
-
 let base =
 (linha[12] || "").trim();
 
 if(
-!situacao.includes("atribu") &&
-!situacao.includes("prepar")
+!numero ||
+!dataLimite ||
+!base
 ){
-continue;
-}
-
-if(!numero || !dataLimite || !base){
 continue;
 }
 
 totalServicos++;
 
+if(prefixo){
 prefixosSet.add(prefixo);
+}
 
 if(!datas.includes(dataLimite)){
 datas.push(dataLimite);
@@ -286,7 +275,13 @@ if(!prefixosPorBase[base]){
 prefixosPorBase[base] = new Set();
 }
 
+if(prefixo){
 prefixosPorBase[base].add(prefixo);
+}
+
+/* =========================
+BASE + DATA LIMITE
+========================= */
 
 if(!resumoDias[base]){
 resumoDias[base] = {};
@@ -299,6 +294,10 @@ resumoDias[base][dataLimite] = 0;
 resumoDias[base][dataLimite]++;
 
 }
+
+/* =========================
+ORDENAR DATAS
+========================= */
 
 datas.sort((a,b)=>{
 
@@ -315,6 +314,10 @@ const dataMaisProxima = datas[0];
 document.getElementById("dataMaisRecente").innerText =
 "Data: " + dataMaisProxima;
 
+/* =========================
+SERVIÇOS VENCENDO HOJE
+========================= */
+
 let totalMaisProxima = 0;
 
 for(let i = 1; i < linhas.length; i++){
@@ -327,17 +330,7 @@ let dataLimite =
 let prefixo =
 (linha[7] || "").trim();
 
-let situacao =
-(linha[9] || "").trim().toLowerCase();
-
-if(
-(
-situacao.includes("atribu") ||
-situacao.includes("prepar")
-)
-&&
-dataLimite === dataMaisProxima
-){
+if(dataLimite === dataMaisProxima){
 
 totalMaisProxima++;
 
@@ -360,31 +353,15 @@ prefixosSet.size;
 document.getElementById("totalServicos").innerText =
 totalServicos;
 
+/* =========================
+FISCAIS
+========================= */
+
 const fiscais = {
 
-IVAN: [
-"19",
-"24",
-"51",
-"66",
-"92"
-],
-
-RAFAEL: [
-"50",
-"52",
-"61",
-"71"
-],
-
-LUIS: [
-"09",
-"10",
-"18",
-"20",
-"21",
-"22"
-]
+IVAN:["19","24","51","66","92"],
+RAFAEL:["50","52","61","71"],
+LUIS:["09","10","18","20","21","22"]
 
 };
 
@@ -394,11 +371,7 @@ for(let fiscal in fiscais){
 
 htmlPrefixos += `
 
-<h3 style="
-margin-top:25px;
-color:#1e3a8a;
-font-size:24px;
-">
+<h3 style="margin-top:30px;">
 ${fiscal}
 </h3>
 
@@ -406,7 +379,7 @@ ${fiscal}
 
 <tr>
 <th>Base</th>
-<th>Prefixos Atribuídos</th>
+<th>Prefixos</th>
 <th>Total</th>
 </tr>
 
@@ -418,7 +391,7 @@ for(let base in prefixosPorBase){
 
 if(base.startsWith(baseFiscal)){
 
-let prefixosEncontrados =
+let prefixos =
 Array.from(prefixosPorBase[base]);
 
 htmlPrefixos += `
@@ -428,11 +401,11 @@ htmlPrefixos += `
 <td>${base}</td>
 
 <td>
-${prefixosEncontrados.join(" / ")}
+${prefixos.join(" / ")}
 </td>
 
 <td>
-${prefixosEncontrados.length}
+${prefixos.length}
 </td>
 
 </tr>
@@ -452,24 +425,40 @@ htmlPrefixos += "</table>";
 document.getElementById("prefixosBase").innerHTML =
 htmlPrefixos;
 
+/* =========================
+SERVIÇOS HOJE POR PREFIXO
+========================= */
+
 let htmlRecentes = "<table>";
 
 htmlRecentes += `
+
 <tr>
 <th>Prefixo</th>
 <th>Quantidade</th>
 <th>Data Limite</th>
 </tr>
+
 `;
 
 for(let prefixo in servicosRecentes){
 
 htmlRecentes += `
+
 <tr>
+
 <td>${prefixo}</td>
-<td>${servicosRecentes[prefixo]}</td>
-<td>${dataMaisProxima}</td>
+
+<td>
+${servicosRecentes[prefixo]}
+</td>
+
+<td>
+${dataMaisProxima}
+</td>
+
 </tr>
+
 `;
 
 }
@@ -479,15 +468,19 @@ htmlRecentes += "</table>";
 document.getElementById("servicosRecentes").innerHTML =
 htmlRecentes;
 
+/* =========================
+PRÓXIMOS 5 DIAS
+========================= */
+
 let proximasDatas = datas.slice(0,5);
 
 let htmlDias = "<table>";
 
 htmlDias += "<tr><th>Base</th>";
 
-proximasDatas.forEach(d=>{
+proximasDatas.forEach(data=>{
 
-htmlDias += `<th>${d}</th>`;
+htmlDias += `<th>${data}</th>`;
 
 });
 
@@ -533,6 +526,8 @@ htmlDias += "</table>";
 
 document.getElementById("proximosDias").innerHTML =
 htmlDias;
+
+}
 
 });
 
