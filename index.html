@@ -249,6 +249,9 @@ for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
+let numero =
+(linha[2] || "").trim();
+
 let dataLimite =
 (linha[3] || "").trim().split(" ")[0];
 
@@ -271,7 +274,7 @@ if(
 continue;
 }
 
-if(!dataLimite || !base || !prefixo){
+if(!numero || !dataLimite || !base || !prefixo){
 continue;
 }
 
@@ -294,10 +297,10 @@ resumoDias[base] = {};
 }
 
 if(!resumoDias[base][dataLimite]){
-resumoDias[base][dataLimite] = [];
+resumoDias[base][dataLimite] = new Set();
 }
 
-resumoDias[base][dataLimite].push(prefixo);
+resumoDias[base][dataLimite].add(numero);
 
 }
 
@@ -321,6 +324,9 @@ let totalMaisProxima = 0;
 for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
+
+let numero =
+(linha[2] || "").trim();
 
 let dataLimite =
 (linha[3] || "").trim().split(" ")[0];
@@ -483,10 +489,6 @@ htmlRecentes += "</table>";
 document.getElementById("servicosRecentes").innerHTML =
 htmlRecentes;
 
-/* ==========================
-SERVIÇOS VENCENDO PRÓXIMOS 5 DIAS
-========================== */
-
 let proximasDatas = datas.slice(0,5);
 
 let htmlDias = "<table>";
@@ -507,15 +509,8 @@ htmlDias += `<tr><td>${base}</td>`;
 
 proximasDatas.forEach(data=>{
 
-let qtd = 0;
-
-if(resumoDias[base][data]){
-
-qtd = resumoDias[base][data]
-.filter(item => item !== "")
-.length;
-
-}
+let qtd =
+(resumoDias[base][data] || new Set()).size;
 
 htmlDias += `<td>${qtd}</td>`;
 
@@ -533,13 +528,8 @@ let totalDia = 0;
 
 for(let base in resumoDias){
 
-if(resumoDias[base][data]){
-
-totalDia += resumoDias[base][data]
-.filter(item => item !== "")
-.length;
-
-}
+totalDia +=
+(resumoDias[base][data] || new Set()).size;
 
 }
 
