@@ -267,7 +267,7 @@ ACOMPANHAMENTO EM TEMPO REAL
 
 <div class="card">
 <h2 id="servicosHoje">0</h2>
-<p>Serviços vencendo na data mais próxima</p>
+<p>Serviços vencendo hoje</p>
 <small id="dataMaisRecente"></small>
 </div>
 
@@ -321,9 +321,9 @@ ACOMPANHAMENTO EM TEMPO REAL
 
 </div>
 
-<div class="bloco">
+<div class="bloco" style="margin-top:-15px;">
 
-<h3>Serviços da Data Mais Próxima</h3>
+<h3>VENCIMENTO HOJE</h3>
 
 <div id="servicosRecentes"></div>
 
@@ -397,8 +397,6 @@ ABA ANALYTICS
 
 <script>
 
-/* LOGIN */
-
 function validarSenha(){
 
 let senha =
@@ -418,8 +416,6 @@ document.getElementById("erroSenha")
 
 }
 
-/* ABAS */
-
 function mostrarAba(aba){
 
 document.getElementById("operacao")
@@ -432,8 +428,6 @@ document.getElementById(aba)
 .style.display = "block";
 
 }
-
-/* PLANILHA */
 
 const url =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv&t=" + new Date().getTime();
@@ -459,8 +453,6 @@ let totalPorBase = {};
 let totalPorPrefixo = {};
 
 let totalServicos = 0;
-
-/* LEITURA */
 
 for(let i = 1; i < linhas.length; i++){
 
@@ -546,8 +538,6 @@ totalPorPrefixo[prefixo]++;
 
 }
 
-/* DATAS */
-
 datas.sort((a,b)=>{
 
 let pa = a.split("/");
@@ -562,8 +552,6 @@ const dataMaisProxima = datas[0];
 
 document.getElementById("dataMaisRecente")
 .innerText = "Data: " + dataMaisProxima;
-
-/* SERVIÇOS HOJE */
 
 let totalMaisProxima = 0;
 
@@ -600,8 +588,6 @@ document.getElementById("prefixos")
 document.getElementById("totalServicos")
 .innerText = totalServicos;
 
-/* BASE OFENSORA */
-
 let proximasDatas = datas.slice(0,5);
 
 let baseOfensora = "";
@@ -635,59 +621,6 @@ baseOfensora + " • " + maiorVolume5Dias;
 document.getElementById("baseOfensoraOperacao")
 .innerText =
 baseOfensora;
-
-/* BASE CRÍTICA */
-
-let maiorBase = "";
-let maiorQtdBase = 0;
-
-for(let base in totalPorBase){
-
-if(totalPorBase[base] > maiorQtdBase){
-
-maiorQtdBase =
-totalPorBase[base];
-
-maiorBase = base;
-
-}
-
-}
-
-document.getElementById("baseCritica")
-.innerText = maiorBase;
-
-/* DIA CRÍTICO */
-
-let maiorDia = "";
-let maiorQtdDia = 0;
-
-for(let data in totalPorData){
-
-if(totalPorData[data] > maiorQtdDia){
-
-maiorQtdDia =
-totalPorData[data];
-
-maiorDia = data;
-
-}
-
-}
-
-document.getElementById("diaCritico")
-.innerText = maiorDia;
-
-/* MÉDIA */
-
-let media =
-Math.round(
-totalServicos /
-Object.keys(totalPorData).length
-);
-
-document.getElementById("mediaServicos")
-.innerText = media;
 
 }
 
