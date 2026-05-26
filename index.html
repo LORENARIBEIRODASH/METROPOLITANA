@@ -3,15 +3,15 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Painel Operacional Automático</title>
+<title>Painel Operacional</title>
 
 <style>
 
 body{
-    font-family: Arial;
-    background:#f4f4f4;
     margin:0;
     padding:20px;
+    font-family:Arial;
+    background:#f4f4f4;
 }
 
 h1{
@@ -27,10 +27,9 @@ h1{
 
 .card{
     background:white;
-    padding:20px;
     border-radius:10px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
-    text-align:center;
+    padding:20px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
 .card h2{
@@ -39,14 +38,8 @@ h1{
 }
 
 .card p{
-    margin-top:10px;
     color:#666;
-}
-
-.container{
-    display:grid;
-    grid-template-columns:2fr 1fr;
-    gap:20px;
+    margin-top:10px;
 }
 
 table{
@@ -62,25 +55,41 @@ th{
 }
 
 td{
-    padding:10px;
     border:1px solid #ddd;
+    padding:10px;
     text-align:center;
 }
 
-.base-box{
+tr:nth-child(even){
+    background:#f9f9f9;
+}
+
+.alta{
+    background:#ffd9d9 !important;
+}
+
+.media{
+    background:#fff3cd !important;
+}
+
+.baixa{
+    background:#d4edda !important;
+}
+
+.baseBox{
+    margin-top:20px;
     background:white;
     padding:20px;
     border-radius:10px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
-.base-item{
+.baseItem{
     padding:10px 0;
     border-bottom:1px solid #eee;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -90,30 +99,26 @@ td{
 <div class="cards">
 
 <div class="card">
-<h2 id="vencendoHoje">0</h2>
-<p>Serviços vencendo hoje</p>
+<h2 id="totalHoje">0</h2>
+<p>Vencendo Hoje</p>
 </div>
 
 <div class="card">
-<h2 id="atribuidos">0</h2>
-<p>Total atribuídos</p>
+<h2 id="totalAtribuidos">0</h2>
+<p>Total Atribuídos</p>
 </div>
 
 <div class="card">
-<h2 id="trabalhando">0</h2>
-<p>Equipes trabalhando</p>
+<h2 id="totalTrabalhando">0</h2>
+<p>Trabalhando</p>
 </div>
 
 <div class="card">
-<h2 id="deslocando">0</h2>
+<h2 id="totalDeslocando">0</h2>
 <p>Deslocando / Local</p>
 </div>
 
 </div>
-
-<div class="container">
-
-<div>
 
 <table>
 
@@ -122,7 +127,7 @@ td{
 <tr>
 <th>Base</th>
 <th>Prefixo</th>
-<th>Vence Hoje</th>
+<th>Data Limite</th>
 <th>Situação</th>
 <th>Tempo</th>
 </tr>
@@ -133,19 +138,11 @@ td{
 
 </table>
 
-</div>
+<div class="baseBox">
 
-<div>
-
-<div class="base-box">
-
-<h3>Vencendo Hoje por Base</h3>
+<h2>Serviços vencendo hoje por base</h2>
 
 <div id="bases"></div>
-
-</div>
-
-</div>
 
 </div>
 
@@ -157,11 +154,11 @@ fetch(url)
 .then(response => response.text())
 .then(data => {
 
-const linhas = data.split("\n").map(l => l.split(","));
+const linhas = data.split("\n").map(linha => linha.split(","));
 
 const tabela = document.getElementById("tabela");
 
-let hoje = new Date().toLocaleDateString('pt-BR');
+const hoje = new Date().toLocaleDateString('pt-BR');
 
 let vencendoHoje = 0;
 let atribuidos = 0;
@@ -209,11 +206,23 @@ if(venceHoje){
     bases[base]++;
 }
 
+let classe = "";
+
+if(venceHoje){
+    classe = "alta";
+}
+else if(situacao.toLowerCase().includes("atribu")){
+    classe = "media";
+}
+else{
+    classe = "baixa";
+}
+
 tabela.innerHTML += `
-<tr>
+<tr class="${classe}">
 <td>${base}</td>
 <td>${prefixo}</td>
-<td>${venceHoje ? "SIM" : "NÃO"}</td>
+<td>${dataLimite}</td>
 <td>${situacao}</td>
 <td>${tempo}</td>
 </tr>
@@ -221,17 +230,17 @@ tabela.innerHTML += `
 
 }
 
-document.getElementById("vencendoHoje").innerText = vencendoHoje;
-document.getElementById("atribuidos").innerText = atribuidos;
-document.getElementById("trabalhando").innerText = trabalhando;
-document.getElementById("deslocando").innerText = deslocando;
+document.getElementById("totalHoje").innerText = vencendoHoje;
+document.getElementById("totalAtribuidos").innerText = atribuidos;
+document.getElementById("totalTrabalhando").innerText = trabalhando;
+document.getElementById("totalDeslocando").innerText = deslocando;
 
-let basesHTML = "";
+let htmlBases = "";
 
 for(let base in bases){
 
-basesHTML += `
-<div class="base-item">
+htmlBases += `
+<div class="baseItem">
 <strong>${base}</strong><br>
 ${bases[base]} vencendo hoje
 </div>
@@ -239,7 +248,7 @@ ${bases[base]} vencendo hoje
 
 }
 
-document.getElementById("bases").innerHTML = basesHTML;
+document.getElementById("bases").innerHTML = htmlBases;
 
 });
 
