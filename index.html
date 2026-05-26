@@ -17,39 +17,34 @@ body{
     color:white;
 }
 
-/* =========================
-TOPO
-========================= */
-
 .topo{
     display:flex;
     align-items:center;
+    justify-content:center;
     gap:20px;
-    margin-bottom:30px;
+    margin-bottom:10px;
 }
 
 .logo{
     width:90px;
     height:90px;
-    object-fit:contain;
     border-radius:12px;
+    object-fit:cover;
     background:white;
     padding:5px;
 }
 
-.topo h1{
-    margin:0;
-    font-size:42px;
+h1{
+    text-align:center;
+    font-size:38px;
+    margin-bottom:10px;
 }
 
 .subtitulo{
+    text-align:center;
+    margin-bottom:40px;
     color:#cbd5e1;
-    margin-top:5px;
 }
-
-/* =========================
-CARDS
-========================= */
 
 .cards{
     display:grid;
@@ -76,10 +71,6 @@ CARDS
     color:#dbeafe;
 }
 
-/* =========================
-BLOCOS
-========================= */
-
 .bloco{
     background:white;
     color:#111;
@@ -93,38 +84,6 @@ BLOCOS
     margin-top:0;
     color:#1e3a8a;
 }
-
-/* =========================
-RESPONSÁVEIS
-========================= */
-
-.fiscais{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-}
-
-.fiscal{
-    color:white;
-    padding:20px;
-    border-radius:15px;
-}
-
-.ivan{
-    background:#1e3a8a;
-}
-
-.rafael{
-    background:#2563eb;
-}
-
-.luis{
-    background:#0f172a;
-}
-
-/* =========================
-TABELAS
-========================= */
 
 table{
     width:100%;
@@ -159,14 +118,10 @@ tr:nth-child(even){
 
 <body>
 
-<!-- =========================
-TOPO
-========================= -->
-
 <div class="topo">
 
 <img
-src="https://i.imgur.com/7l6GZ8Y.png"
+src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHdQ2576jXr-cqaCNJ6we0v9zEIZrvN1q9rg&s"
 class="logo"
 >
 
@@ -181,10 +136,6 @@ ACOMPANHAMENTO EM TEMPO REAL
 </div>
 
 </div>
-
-<!-- =========================
-CARDS
-========================= -->
 
 <div class="cards">
 
@@ -206,19 +157,20 @@ CARDS
 
 </div>
 
-<!-- =========================
-RESPONSÁVEIS
-========================= -->
-
 <div class="bloco">
 
 <h3>Responsáveis Operacionais</h3>
 
-<div class="fiscais">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
 
-<div class="fiscal ivan">
+<div style="
+background:#1e3a8a;
+color:white;
+padding:20px;
+border-radius:15px;
+">
 
-<h2>IVAN</h2>
+<h2 style="margin-top:0;">IVAN</h2>
 
 <p><strong>Bases:</strong></p>
 
@@ -228,9 +180,14 @@ RESPONSÁVEIS
 
 </div>
 
-<div class="fiscal rafael">
+<div style="
+background:#2563eb;
+color:white;
+padding:20px;
+border-radius:15px;
+">
 
-<h2>RAFAEL</h2>
+<h2 style="margin-top:0;">RAFAEL</h2>
 
 <p><strong>Bases:</strong></p>
 
@@ -240,9 +197,14 @@ RESPONSÁVEIS
 
 </div>
 
-<div class="fiscal luis">
+<div style="
+background:#0f172a;
+color:white;
+padding:20px;
+border-radius:15px;
+">
 
-<h2>LUIS</h2>
+<h2 style="margin-top:0;">LUIS</h2>
 
 <p><strong>Bases:</strong></p>
 
@@ -256,10 +218,6 @@ RESPONSÁVEIS
 
 </div>
 
-<!-- =========================
-PREFIXOS
-========================= -->
-
 <div class="bloco">
 
 <h3>Prefixos por Fiscal</h3>
@@ -268,10 +226,6 @@ PREFIXOS
 
 </div>
 
-<!-- =========================
-SERVIÇOS MAIS PRÓXIMOS
-========================= -->
-
 <div class="bloco">
 
 <h3>Serviços da Data Mais Próxima</h3>
@@ -279,10 +233,6 @@ SERVIÇOS MAIS PRÓXIMOS
 <div id="servicosRecentes"></div>
 
 </div>
-
-<!-- =========================
-5 DIAS
-========================= -->
 
 <div class="bloco">
 
@@ -314,10 +264,6 @@ let resumoDias = {};
 let servicosRecentes = {};
 
 let totalServicos = 0;
-
-/* =========================
-LEITURA PLANILHA
-========================= */
 
 for(let i = 1; i < linhas.length; i++){
 
@@ -369,10 +315,6 @@ resumoDias[base][dataLimite]++;
 
 }
 
-/* =========================
-ORDENA DATAS
-========================= */
-
 datas.sort((a,b)=>{
 
 let pa = a.split("/");
@@ -387,10 +329,6 @@ const dataMaisProxima = datas[0];
 
 document.getElementById("dataMaisRecente").innerText =
 "Data: " + dataMaisProxima;
-
-/* =========================
-SERVIÇOS MAIS PRÓXIMOS
-========================= */
 
 let totalMaisProxima = 0;
 
@@ -432,10 +370,6 @@ prefixosSet.size;
 
 document.getElementById("totalServicos").innerText =
 totalServicos;
-
-/* =========================
-PREFIXOS POR FISCAL
-========================= */
 
 const fiscais = {
 
@@ -531,10 +465,6 @@ htmlPrefixos += "</table>";
 document.getElementById("prefixosBase").innerHTML =
 htmlPrefixos;
 
-/* =========================
-TABELA DATA MAIS PRÓXIMA
-========================= */
-
 let htmlRecentes = "<table>";
 
 htmlRecentes += `
@@ -561,10 +491,6 @@ htmlRecentes += "</table>";
 
 document.getElementById("servicosRecentes").innerHTML =
 htmlRecentes;
-
-/* =========================
-PRÓXIMOS 5 DIAS
-========================= */
 
 let proximasDatas = datas.slice(0,5);
 
@@ -625,5 +551,4 @@ htmlDias;
 </script>
 
 </body>
-
 </html>
