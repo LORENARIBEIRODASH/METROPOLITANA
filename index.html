@@ -7,8 +7,6 @@
 
 <title>COMERCIAL METROPOLITANA</title>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
 <style>
 
 body{
@@ -133,7 +131,7 @@ ACOMPANHAMENTO EM TEMPO REAL
 
 <div class="card">
 <h2 id="totalServicos">0</h2>
-<p>Total de Serviços Operacionais</p>
+<p>Total de Serviços Atribuídos</p>
 </div>
 
 </div>
@@ -228,14 +226,14 @@ border-radius:15px;
 const url =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv";
 
-Papa.parse(url, {
+fetch(url)
 
-download: true,
-header: true,
+.then(r => r.text())
 
-complete: function(resultado) {
+.then(data => {
 
-const linhas = resultado.data;
+const linhas =
+data.split("\n").map(l => l.split(","));
 
 let datas = [];
 let prefixosSet = new Set();
@@ -246,50 +244,30 @@ let servicosRecentes = {};
 
 let totalServicos = 0;
 
-for(let i = 0; i < linhas.length; i++){
+for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
 let numero =
-(linha["Numero"] || "").toString().trim();
+(linha[2] || "").trim();
 
 let dataLimite =
-(linha["Data Limite"] || "")
-.toString()
-.trim()
-.split(" ")[0];
+(linha[3] || "").trim().split(" ")[0];
 
 let prefixo =
-(linha["Prefixo"] || "")
-.toString()
-.trim();
+(linha[7] || "").trim();
 
 let situacao =
-(linha["Situação atribuída"] || "")
-.toString()
-.toLowerCase()
-.trim();
+(linha[9] || "").trim().toLowerCase();
 
 let base =
-(linha["Base"] || "")
-.toString()
-.trim();
+(linha[12] || "").trim();
 
-if(
-!situacao.includes("atribuida") &&
-!situacao.includes("trabalhando") &&
-!situacao.includes("deslocamento") &&
-!situacao.includes("preparação") &&
-!situacao.includes("preparacao")
-){
+if(!situacao.includes("atribu")){
 continue;
 }
 
-if(
-!numero ||
-!dataLimite ||
-!base
-){
+if(!numero || !dataLimite || !base){
 continue;
 }
 
@@ -305,9 +283,7 @@ if(!prefixosPorBase[base]){
 prefixosPorBase[base] = new Set();
 }
 
-if(prefixo){
 prefixosPorBase[base].add(prefixo);
-}
 
 if(!resumoDias[base]){
 resumoDias[base] = {};
@@ -338,41 +314,21 @@ document.getElementById("dataMaisRecente").innerText =
 
 let totalMaisProxima = 0;
 
-for(let i = 0; i < linhas.length; i++){
+for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
-let numero =
-(linha["Numero"] || "")
-.toString()
-.trim();
-
 let dataLimite =
-(linha["Data Limite"] || "")
-.toString()
-.trim()
-.split(" ")[0];
+(linha[3] || "").trim().split(" ")[0];
 
 let prefixo =
-(linha["Prefixo"] || "")
-.toString()
-.trim();
+(linha[7] || "").trim();
 
 let situacao =
-(linha["Situação atribuída"] || "")
-.toString()
-.toLowerCase()
-.trim();
+(linha[9] || "").trim().toLowerCase();
 
 if(
-(
-situacao.includes("atribuida") ||
-situacao.includes("trabalhando") ||
-situacao.includes("deslocamento") ||
-situacao.includes("preparação") ||
-situacao.includes("preparacao")
-)
-&&
+situacao.includes("atribu") &&
 dataLimite === dataMaisProxima
 ){
 
@@ -570,8 +526,6 @@ htmlDias += "</table>";
 
 document.getElementById("proximosDias").innerHTML =
 htmlDias;
-
-}
 
 });
 
