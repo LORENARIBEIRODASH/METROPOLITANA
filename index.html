@@ -7,6 +7,8 @@
 
 <title>COMERCIAL METROPOLITANA</title>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 <style>
 
 body{
@@ -226,14 +228,13 @@ border-radius:15px;
 const url =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv";
 
-fetch(url)
+Papa.parse(url, {
 
-.then(r => r.text())
+download: true,
 
-.then(data => {
+complete: function(resultado) {
 
-const linhas =
-data.split("\n").map(l => l.split(","));
+const linhas = resultado.data;
 
 let datas = [];
 let prefixosSet = new Set();
@@ -260,7 +261,7 @@ let situacao =
 let base =
 (linha[12] || "").trim();
 
-if(!situacao.includes("atribu")){
+if(!situacao.includes("atribuida")){
 continue;
 }
 
@@ -325,7 +326,7 @@ let situacao =
 (linha[9] || "").trim().toLowerCase();
 
 if(
-situacao.includes("atribu") &&
+situacao.includes("atribuida") &&
 dataLimite === dataMaisProxima
 ){
 
@@ -470,7 +471,7 @@ document.getElementById("servicosRecentes").innerHTML =
 htmlRecentes;
 
 /* ==========================
-ULTIMO BLOCO ATUALIZADO
+SERVIÇOS VENCENDO PRÓXIMOS 5 DIAS
 ========================== */
 
 let proximasDatas = datas.slice(0,5);
@@ -539,6 +540,8 @@ htmlDias += "</table>";
 
 document.getElementById("proximosDias").innerHTML =
 htmlDias;
+
+}
 
 });
 
