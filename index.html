@@ -3,7 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Painel Dinâmico</title>
+<title>Painel Dinâmico Operacional</title>
 
 <style>
 
@@ -14,6 +14,7 @@ body{
 }
 
 h1{
+    margin-top:40px;
     margin-bottom:20px;
 }
 
@@ -22,6 +23,7 @@ table{
     border-collapse:collapse;
     margin-bottom:40px;
     background:white;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
 th{
@@ -51,11 +53,62 @@ td{
     font-weight:bold;
 }
 
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+.card h2{
+    margin:0;
+    font-size:35px;
+}
+
+.card p{
+    margin-top:10px;
+    color:#666;
+}
+
 </style>
 
 </head>
 
 <body>
+
+<h1>Painel Operacional</h1>
+
+<div class="cards">
+
+<div class="card">
+<h2 id="totalServicos">0</h2>
+<p>Total de Serviços</p>
+</div>
+
+<div class="card">
+<h2 id="totalBases">0</h2>
+<p>Total de Bases</p>
+</div>
+
+<div class="card">
+<h2 id="totalPrefixos">0</h2>
+<p>Total de Prefixos</p>
+</div>
+
+<div class="card">
+<h2 id="totalDatas">0</h2>
+<p>Total de Datas</p>
+</div>
+
+</div>
 
 <h1>Resumo Geral por Base</h1>
 
@@ -64,6 +117,10 @@ td{
 <h1>Detalhamento por Prefixo</h1>
 
 <div id="detalhamento"></div>
+
+<h1>Data Limite por Base</h1>
+
+<div id="vencimentos"></div>
 
 <script>
 
@@ -79,6 +136,11 @@ let datas = [];
 let resumo = {};
 let detalhamento = {};
 
+let totalServicos = 0;
+
+let basesSet = new Set();
+let prefixosSet = new Set();
+
 for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
@@ -87,7 +149,14 @@ let dataLimite = (linha[3] || "").split(" ")[0];
 let prefixo = linha[7] || "SEM PREFIXO";
 let base = linha[12] || "SEM BASE";
 
+let quantidade = parseInt(linha[0]) || 1;
+
 if(!dataLimite) continue;
+
+basesSet.add(base);
+prefixosSet.add(prefixo);
+
+totalServicos += quantidade;
 
 if(!datas.includes(dataLimite)){
     datas.push(dataLimite);
@@ -101,7 +170,7 @@ if(!resumo[base][dataLimite]){
     resumo[base][dataLimite] = 0;
 }
 
-resumo[base][dataLimite]++;
+resumo[base][dataLimite] += quantidade;
 
 if(!detalhamento[base]){
     detalhamento[base] = {};
@@ -115,7 +184,7 @@ if(!detalhamento[base][prefixo][dataLimite]){
     detalhamento[base][prefixo][dataLimite] = 0;
 }
 
-detalhamento[base][prefixo][dataLimite]++;
+detalhamento[base][prefixo][dataLimite] += quantidade;
 
 }
 
@@ -129,6 +198,11 @@ new Date(pb[2], pb[1]-1, pb[0]);
 
 });
 
+document.getElementById("totalServicos").innerText = totalServicos;
+document.getElementById("totalBases").innerText = basesSet.size;
+document.getElementById("totalPrefixos").innerText = prefixosSet.size;
+document.getElementById("totalDatas").innerText = datas.length;
+
 let resumoHTML = "<table>";
 
 resumoHTML += "<tr><th>Base</th>";
@@ -137,7 +211,7 @@ datas.forEach(d=>{
 resumoHTML += `<th>${d}</th>`;
 });
 
-resumoHTML += "<th>Total</th></tr>";
+resumoHTML += "<th>Total Geral</th></tr>";
 
 for(let base in resumo){
 
@@ -171,7 +245,7 @@ datas.forEach(d=>{
 detalhamentoHTML += `<th>${d}</th>`;
 });
 
-detalhamentoHTML += "<th>Total</th></tr>";
+detalhamentoHTML += "<th>Total Geral</th></tr>";
 
 for(let base in detalhamento){
 
@@ -204,6 +278,40 @@ detalhamentoHTML += `<td>${total}</td></tr>`;
 detalhamentoHTML += "</table>";
 
 document.getElementById("detalhamento").innerHTML = detalhamentoHTML;
+
+let vencHTML = "<table>";
+
+vencHTML += "<tr><th>Base</th>";
+
+datas.forEach(d=>{
+vencHTML += `<th>${d}</th>`;
+});
+
+vencHTML += "<th>Total Geral</th></tr>";
+
+for(let base in resumo){
+
+let total = 0;
+
+vencHTML += `<tr class="base"><td>${base}</td>`;
+
+datas.forEach(d=>{
+
+let qtd = resumo[base][d] || 0;
+
+total += qtd;
+
+vencHTML += `<td>${qtd}</td>`;
+
+});
+
+vencHTML += `<td>${total}</td></tr>`;
+
+}
+
+vencHTML += "</table>";
+
+document.getElementById("vencimentos").innerHTML = vencHTML;
 
 });
 
