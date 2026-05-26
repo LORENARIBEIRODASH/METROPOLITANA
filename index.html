@@ -9,96 +9,233 @@
 
 body{
     font-family: Arial;
-    background:#f3f3f3;
+    background:#f4f4f4;
+    margin:0;
     padding:20px;
 }
 
 h1{
     color:#111;
+    margin-bottom:20px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card h2{
+    margin:0;
+    font-size:32px;
+}
+
+.card p{
+    margin-top:10px;
+    color:#666;
+}
+
+.container{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
     background:white;
-    margin-top:20px;
 }
 
 th{
     background:#000;
     color:white;
-    padding:14px;
+    padding:12px;
 }
 
 td{
-    padding:12px;
+    padding:10px;
     border:1px solid #ddd;
     text-align:center;
 }
 
-.alta{
-    background:#ffd9d9;
+.base-box{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom:20px;
 }
 
-.media{
-    background:#fff4cc;
-}
-
-.baixa{
-    background:#ddffdd;
+.base-box h3{
+    margin-top:0;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<h1>Painel Operacional de Serviços</h1>
+<h1>Painel Operacional Automático</h1>
 
-<table>
+<div class="cards">
 
+<div class="card">
+<h2 id="vencendoHoje">0</h2>
+<p>Serviços vencendo hoje</p>
+</div>
+
+<div class="card">
+<h2 id="atribuidos">0</h2>
+<p>Total atribuídos</p>
+</div>
+
+<div class="card">
+<h2 id="trabalhando">0</h2>
+<p>Equipes trabalhando</p>
+</div>
+
+<div class="card">
+<h2 id="deslocando">0</h2>
+<p>Equipes deslocando/local</p>
+</div>
+
+</div>
+
+<div class="container">
+
+<div>
+
+<table id="tabela">
+<thead>
 <tr>
 <th>Base</th>
-<th>Número da Equipe</th>
-<th>Bairro</th>
-<th>Quantidade de Serviços</th>
+<th>Prefixo</th>
+<th>Vencendo Hoje</th>
+<th>Total Serviços</th>
 <th>Situação</th>
 <th>Tempo</th>
-<th>Prioridade</th>
 </tr>
+</thead>
 
-<tr class="alta">
-<td>Vila Brasília</td>
-<td>APAL008T</td>
-<td>Cidade Vera Cruz</td>
-<td>28</td>
-<td>Trabalhando</td>
-<td>00:00:28</td>
-<td>Alta</td>
-</tr>
-
-<tr class="media">
-<td>Setor Garavelo</td>
-<td>APAL090M</td>
-<td>Jardim Helvécia</td>
-<td>14</td>
-<td>Atribuída</td>
-<td>00:14:46</td>
-<td>Média</td>
-</tr>
-
-<tr class="baixa">
-<td>Senador Canedo</td>
-<td>SENL006M</td>
-<td>Jardim Barcelona</td>
-<td>3</td>
-<td>Online</td>
-<td>00:00:10</td>
-<td>Baixa</td>
-</tr>
+<tbody></tbody>
 
 </table>
+
+</div>
+
+<div>
+
+<div class="base-box">
+<h3>Serviços vencendo por Base</h3>
+<div id="bases"></div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv";
+
+fetch(url)
+.then(response => response.text())
+.then(data => {
+
+const linhas = data.split("\n").map(linha => linha.split(","));
+
+const tbody = document.querySelector("#tabela tbody");
+
+let hoje = new Date().toLocaleDateString('pt-BR');
+
+let vencendoHoje = 0;
+let atribuidos = 0;
+let trabalhando = 0;
+let deslocando = 0;
+
+let bases = {};
+
+for(let i = 1; i < linhas.length; i++){
+
+let linha = linhas[i];
+
+let dataLimite = linha[3];
+let prefixo = linha[7];
+let situacao = linha[10];
+let tempo = linha[11];
+let base = linha[12];
+
+if(dataLimite.includes(hoje)){
+    vencendoHoje++;
+}
+
+if(situacao.toLowerCase().includes("atribu")){
+    atribuidos++;
+}
+
+if(situacao.toLowerCase().includes("trabalhando")){
+    trabalhando++;
+}
+
+if(
+situacao.toLowerCase().includes("deslocando") ||
+situacao.toLowerCase().includes("local")
+){
+    deslocando++;
+}
+
+if(!bases[base]){
+    bases[base] = 0;
+}
+
+if(dataLimite.includes(hoje)){
+    bases[base]++;
+}
+
+tbody.innerHTML += `
+<tr>
+<td>${base}</td>
+<td>${prefixo}</td>
+<td>${dataLimite.includes(hoje) ? "SIM" : "NÃO"}</td>
+<td>1</td>
+<td>${situacao}</td>
+<td>${tempo}</td>
+</tr>
+`;
+
+}
+
+document.getElementById("vencendoHoje").innerText = vencendoHoje;
+document.getElementById("atribuidos").innerText = atribuidos;
+document.getElementById("trabalhando").innerText = trabalhando;
+document.getElementById("deslocando").innerText = deslocando;
+
+let basesHTML = "";
+
+for(let base in bases){
+
+basesHTML += `
+<p>
+<strong>${base}</strong>: ${bases[base]}
+</p>
+`;
+
+}
+
+document.getElementById("bases").innerHTML = basesHTML;
+
+});
+
+</script>
 
 </body>
 </html>
