@@ -2,7 +2,10 @@
 <html lang="pt-br">
 
 <head>
+
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>COMERCIAL METROPOLITANA</title>
 
 <style>
@@ -11,24 +14,23 @@ body{
     margin:0;
     padding:20px;
     font-family:Arial;
-    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    background:linear-gradient(135deg,#08142e,#163b8f);
     color:white;
 }
 
-/* =========================
-TOPO
-========================= */
+/* TOPO */
 
 .topo{
     display:flex;
     align-items:center;
+    justify-content:center;
     gap:20px;
     margin-bottom:30px;
 }
 
 .logo{
     background:white;
-    padding:10px;
+    padding:12px;
     border-radius:15px;
 }
 
@@ -36,72 +38,67 @@ TOPO
     height:70px;
 }
 
+.titulo{
+    text-align:center;
+}
+
 .titulo h1{
     margin:0;
-    font-size:38px;
+    font-size:42px;
+    font-weight:bold;
 }
 
 .subtitulo{
-    color:#cbd5e1;
     margin-top:5px;
-    letter-spacing:1px;
+    color:#cbd5e1;
+    font-size:14px;
 }
 
-/* =========================
-CARDS
-========================= */
+/* CARDS */
 
 .cards{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:20px;
-    margin-bottom:30px;
+    gap:15px;
+    margin-bottom:20px;
 }
 
 .card{
     background:rgba(255,255,255,0.12);
-    backdrop-filter:blur(10px);
-    border-radius:18px;
-    padding:25px;
+    padding:20px;
+    border-radius:15px;
     box-shadow:0 4px 10px rgba(0,0,0,0.25);
 }
 
 .card h2{
     margin:0;
-    font-size:42px;
+    font-size:48px;
 }
 
 .card p{
     margin-top:10px;
     color:#dbeafe;
+    font-size:14px;
 }
 
-.card small{
-    color:#cbd5e1;
-}
-
-/* =========================
-BLOCOS
-========================= */
+/* BLOCOS */
 
 .bloco{
     background:white;
     color:#111;
-    border-radius:18px;
+    border-radius:15px;
     padding:20px;
-    margin-bottom:30px;
+    margin-bottom:20px;
     box-shadow:0 4px 10px rgba(0,0,0,0.25);
     overflow:auto;
 }
 
 .bloco h3{
     margin-top:0;
-    color:#1e3a8a;
+    color:#163b8f;
 }
 
-/* =========================
-TABELAS
-========================= */
+/* TABELAS */
 
 table{
     width:100%;
@@ -124,7 +121,7 @@ td{
 }
 
 tr:nth-child(even){
-    background:#f5f5f5;
+    background:#f3f4f6;
 }
 
 .total{
@@ -132,24 +129,18 @@ tr:nth-child(even){
     font-weight:bold;
 }
 
-/* =========================
-FISCAIS
-========================= */
+/* FISCAIS */
 
 .fiscais{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:20px;
+    gap:15px;
 }
 
 .fiscal{
-    color:white;
-    padding:20px;
     border-radius:15px;
-}
-
-.fiscal h2{
-    margin-top:0;
+    padding:20px;
+    color:white;
 }
 
 .ivan{
@@ -164,41 +155,66 @@ FISCAIS
     background:#0f172a;
 }
 
+.fiscal h2{
+    margin-top:0;
+}
+
+.fiscal p{
+    margin:5px 0;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:900px){
+
+.cards{
+    grid-template-columns:1fr;
+}
+
+.fiscais{
+    grid-template-columns:1fr;
+}
+
+.topo{
+    flex-direction:column;
+}
+
+}
+
 </style>
 
 </head>
 
 <body>
 
-<!-- =========================
-TOPO
-========================= -->
+<!-- TOPO -->
 
 <div class="topo">
 
 <div class="logo">
-<img src="https://upload.wikimedia.org/wikipedia/commons/5/56/Equatorial_Energia_logo.png">
+<img src="https://upload.wikimedia.org/wikipedia/pt/7/79/Equatorial_Energia_Logo.png">
 </div>
 
 <div class="titulo">
+
 <h1>COMERCIAL METROPOLITANA</h1>
+
 <div class="subtitulo">
 ACOMPANHAMENTO EM TEMPO REAL
 </div>
-</div>
 
 </div>
 
-<!-- =========================
-CARDS
-========================= -->
+</div>
+
+<!-- CARDS -->
 
 <div class="cards">
 
 <div class="card">
 <h2 id="servicosHoje">0</h2>
 <p>Serviços vencendo na data mais próxima</p>
-<small id="dataMaisRecente"></small>
+<p id="dataMaisRecente"></p>
 </div>
 
 <div class="card">
@@ -213,9 +229,7 @@ CARDS
 
 </div>
 
-<!-- =========================
-FISCAIS
-========================= -->
+<!-- RESPONSÁVEIS -->
 
 <div class="bloco">
 
@@ -245,21 +259,17 @@ FISCAIS
 
 </div>
 
-<!-- =========================
-PREFIXOS POR FISCAL
-========================= -->
+<!-- PREFIXOS -->
 
 <div class="bloco">
 
-<h3>Prefixos por Base e Fiscal</h3>
+<h3>Prefixos por Fiscal</h3>
 
-<div id="prefixosBaseFiscal"></div>
+<div id="prefixosFiscal"></div>
 
 </div>
 
-<!-- =========================
-SERVIÇOS DATA MAIS PRÓXIMA
-========================= -->
+<!-- DATA MAIS PRÓXIMA -->
 
 <div class="bloco">
 
@@ -269,9 +279,7 @@ SERVIÇOS DATA MAIS PRÓXIMA
 
 </div>
 
-<!-- =========================
-PRÓXIMOS 5 DIAS
-========================= -->
+<!-- 5 DIAS -->
 
 <div class="bloco">
 
@@ -310,8 +318,8 @@ function ordenarData(a,b){
 const pa = a.split("/");
 const pb = b.split("/");
 
-return new Date(pa[2], pa[1]-1, pa[0]) -
-new Date(pb[2], pb[1]-1, pb[0]);
+return new Date(pa[2],pa[1]-1,pa[0]) -
+new Date(pb[2],pb[1]-1,pb[0]);
 
 }
 
@@ -322,24 +330,19 @@ fetch(url)
 const linhas = data.split("\n").map(l => l.split(","));
 
 let datas = [];
-let prefixosSet = new Set();
+let prefixos = new Set();
+let totalServicos = 0;
 
-let prefixosPorFiscal = {
+let prefixosFiscal = {
     IVAN:{},
     RAFAEL:{},
     LUIS:{}
 };
 
 let resumoDias = {};
-let servicosRecentes = {};
+let servicosMaisRecentes = {};
 
-let totalServicos = 0;
-
-/* =========================
-LEITURA
-========================= */
-
-for(let i = 1; i < linhas.length; i++){
+for(let i=1;i<linhas.length;i++){
 
 let linha = linhas[i];
 
@@ -348,17 +351,21 @@ let prefixo = (linha[7] || "").trim();
 let situacao = (linha[9] || "").trim().toLowerCase();
 let base = (linha[12] || "").trim();
 
-if(!situacao.includes("atribu")){
+if(
+!dataLimite ||
+!prefixo ||
+!base
+){
     continue;
 }
 
-if(!dataLimite || !base || !prefixo){
+if(!situacao.includes("atribu")){
     continue;
 }
 
 totalServicos++;
 
-prefixosSet.add(prefixo);
+prefixos.add(prefixo);
 
 if(!datas.includes(dataLimite)){
     datas.push(dataLimite);
@@ -366,11 +373,11 @@ if(!datas.includes(dataLimite)){
 
 let fiscal = fiscalDaBase(base);
 
-if(!prefixosPorFiscal[fiscal][base]){
-    prefixosPorFiscal[fiscal][base] = new Set();
+if(!prefixosFiscal[fiscal][base]){
+    prefixosFiscal[fiscal][base] = new Set();
 }
 
-prefixosPorFiscal[fiscal][base].add(prefixo);
+prefixosFiscal[fiscal][base].add(prefixo);
 
 if(!resumoDias[base]){
     resumoDias[base] = {};
@@ -386,24 +393,22 @@ resumoDias[base][dataLimite]++;
 
 datas.sort(ordenarData);
 
-const dataMaisProxima = datas[0];
+const dataMaisRecente = datas[0];
 
 document.getElementById("dataMaisRecente").innerText =
-"Data: " + dataMaisProxima;
+"Data: " + dataMaisRecente;
 
 document.getElementById("prefixos").innerText =
-prefixosSet.size;
+prefixos.size;
 
 document.getElementById("totalServicos").innerText =
 totalServicos;
 
-/* =========================
-SERVICOS DATA MAIS PROXIMA
-========================= */
+/* SERVIÇOS MAIS RECENTES */
 
-let totalMaisProxima = 0;
+let totalHoje = 0;
 
-for(let i = 1; i < linhas.length; i++){
+for(let i=1;i<linhas.length;i++){
 
 let linha = linhas[i];
 
@@ -413,39 +418,33 @@ let situacao = (linha[9] || "").trim().toLowerCase();
 
 if(
 situacao.includes("atribu") &&
-dataLimite === dataMaisProxima
+dataLimite === dataMaisRecente
 ){
 
-totalMaisProxima++;
+totalHoje++;
 
-if(!servicosRecentes[prefixo]){
-    servicosRecentes[prefixo] = 0;
+if(!servicosMaisRecentes[prefixo]){
+    servicosMaisRecentes[prefixo] = 0;
 }
 
-servicosRecentes[prefixo]++;
+servicosMaisRecentes[prefixo]++;
 
 }
 
 }
 
 document.getElementById("servicosHoje").innerText =
-totalMaisProxima;
+totalHoje;
 
-/* =========================
-PREFIXOS POR BASE E FISCAL
-========================= */
+/* PREFIXOS POR FISCAL */
 
 let htmlFiscal = "";
 
 ["IVAN","RAFAEL","LUIS"].forEach(fiscal => {
 
 htmlFiscal += `
-<h3 style="margin-top:30px;color:#1e3a8a;">
-${fiscal}
-</h3>
-`;
+<h3>${fiscal}</h3>
 
-htmlFiscal += `
 <table>
 
 <tr>
@@ -454,13 +453,13 @@ htmlFiscal += `
 </tr>
 `;
 
-for(let base in prefixosPorFiscal[fiscal]){
+for(let base in prefixosFiscal[fiscal]){
 
 htmlFiscal += `
 <tr>
 <td>${base}</td>
 <td>
-${Array.from(prefixosPorFiscal[fiscal][base]).join(" / ")}
+${Array.from(prefixosFiscal[fiscal][base]).join(" / ")}
 </td>
 </tr>
 `;
@@ -471,16 +470,14 @@ htmlFiscal += "</table>";
 
 });
 
-document.getElementById("prefixosBaseFiscal").innerHTML =
+document.getElementById("prefixosFiscal").innerHTML =
 htmlFiscal;
 
-/* =========================
-SERVICOS MAIS PROXIMOS
-========================= */
+/* SERVIÇOS MAIS RECENTES */
 
-let htmlRecentes = "<table>";
+let htmlRecentes = `
+<table>
 
-htmlRecentes += `
 <tr>
 <th>Prefixo</th>
 <th>Quantidade</th>
@@ -488,13 +485,13 @@ htmlRecentes += `
 </tr>
 `;
 
-for(let prefixo in servicosRecentes){
+for(let prefixo in servicosMaisRecentes){
 
 htmlRecentes += `
 <tr>
 <td>${prefixo}</td>
-<td>${servicosRecentes[prefixo]}</td>
-<td>${dataMaisProxima}</td>
+<td>${servicosMaisRecentes[prefixo]}</td>
+<td>${dataMaisRecente}</td>
 </tr>
 `;
 
@@ -505,9 +502,7 @@ htmlRecentes += "</table>";
 document.getElementById("servicosRecentes").innerHTML =
 htmlRecentes;
 
-/* =========================
-PROXIMOS 5 DIAS
-========================= */
+/* PRÓXIMOS 5 DIAS */
 
 let proximasDatas = datas.slice(0,5);
 
@@ -523,10 +518,10 @@ htmlDias += `<th>${data}</th>`;
 
 htmlDias += "<th>Total</th></tr>";
 
-let totalColunas = {};
+let totaisColuna = {};
 
-proximasDatas.forEach(d => {
-totalColunas[d] = 0;
+proximasDatas.forEach(data => {
+totaisColuna[data] = 0;
 });
 
 for(let base in resumoDias){
@@ -539,9 +534,9 @@ proximasDatas.forEach(data => {
 
 let qtd = resumoDias[base][data] || 0;
 
-totalLinha += qtd;
+totaisColuna[data] += qtd;
 
-totalColunas[data] += qtd;
+totalLinha += qtd;
 
 htmlDias += `<td>${qtd}</td>`;
 
@@ -556,20 +551,17 @@ ${totalLinha}
 
 }
 
-htmlDias += `
-<tr class="total">
-<td>TOTAL</td>
-`;
+htmlDias += `<tr class="total"><td>TOTAL</td>`;
 
 let totalGeral = 0;
 
 proximasDatas.forEach(data => {
 
-totalGeral += totalColunas[data];
+totalGeral += totaisColuna[data];
 
 htmlDias += `
 <td class="total">
-${totalColunas[data]}
+${totaisColuna[data]}
 </td>
 `;
 
