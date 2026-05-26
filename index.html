@@ -2,7 +2,9 @@
 <html lang="pt-br">
 
 <head>
+
 <meta charset="UTF-8">
+
 <title>COMERCIAL METROPOLITANA</title>
 
 <style>
@@ -212,13 +214,17 @@ border-radius:15px;
 
 <script>
 
-const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv";
+const url =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?output=csv";
 
 fetch(url)
+
 .then(r => r.text())
+
 .then(data => {
 
-const linhas = data.split("\n").map(l => l.split(","));
+const linhas =
+data.split("\n").map(l => l.split(","));
 
 let datas = [];
 let prefixosSet = new Set();
@@ -233,10 +239,17 @@ for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
-let dataLimite = (linha[3] || "").trim().split(" ")[0];
-let prefixo = (linha[7] || "").trim();
-let situacao = (linha[9] || "").trim().toLowerCase();
-let base = (linha[12] || "").trim();
+let dataLimite =
+(linha[3] || "").trim().split(" ")[0];
+
+let prefixo =
+(linha[7] || "").trim();
+
+let situacao =
+(linha[9] || "").trim().toLowerCase();
+
+let base =
+(linha[12] || "").trim();
 
 if(!situacao.includes("atribu")){
     continue;
@@ -293,9 +306,14 @@ for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
-let dataLimite = (linha[3] || "").trim().split(" ")[0];
-let prefixo = (linha[7] || "").trim();
-let situacao = (linha[9] || "").trim().toLowerCase();
+let dataLimite =
+(linha[3] || "").trim().split(" ")[0];
+
+let prefixo =
+(linha[7] || "").trim();
+
+let situacao =
+(linha[9] || "").trim().toLowerCase();
 
 if(
 situacao.includes("atribu") &&
@@ -327,103 +345,98 @@ totalServicos;
 PREFIXOS POR FISCAL
 ========================== */
 
+const fiscais = {
+
+IVAN: [
+"19 ME-SEN CANEDO/CALDAZINHA",
+"24 ME-BELA VISTA GO/SAO MIGUEL",
+"51 ME-VIANOPOLIS MUNICIPIO",
+"66 ME-SILVANIA/GAMELEIRA GO",
+"92 ME-BONFINOPOLIS/LEOPOLDO BU"
+],
+
+RAFAEL: [
+"50 ME-TRINDADE/CAMP/ST BARB",
+"52 ME-INHUMAS/CATURAÍ",
+"61 ME-NEROPOLIS/NOVA VEN/ST AN",
+"71 ME-GUAPO/ARAGO/VARJAO"
+],
+
+LUIS: [
+"09 ME-SETOR GARAVELO APAR",
+"10 ME-VILA BRASILIA",
+"18 ME-HIDROLANDIA MUNICIPIO",
+"20 ME-JARDIM CRISTALINO APAREC",
+"21 ME-PARQUE DAS NACOES APAREC",
+"22 ME-JARDIM ALTO PARAISO"
+]
+
+};
+
 let htmlPrefixos = "";
 
+for(let fiscal in fiscais){
+
 htmlPrefixos += `
 
-<h3 style="margin-top:0;color:#1e3a8a;">
-IVAN
+<h3 style="
+margin-top:25px;
+color:#1e3a8a;
+font-size:24px;
+">
+${fiscal}
 </h3>
 
 <table>
 
 <tr>
 <th>Base</th>
-<th>Prefixos</th>
+<th>Prefixos Atribuídos</th>
+<th>Total</th>
 </tr>
 
 `;
 
-["19","24","51","66","92"].forEach(base=>{
+fiscais[fiscal].forEach(baseFiscal => {
 
-if(prefixosPorBase[base]){
+let prefixosEncontrados = [];
+
+for(let base in prefixosPorBase){
+
+if(base.includes(baseFiscal.substring(0,2))){
+
+prefixosEncontrados =
+Array.from(prefixosPorBase[base]);
 
 htmlPrefixos += `
+
 <tr>
-<td>${base}</td>
-<td>${Array.from(prefixosPorBase[base]).join(" / ")}</td>
+
+<td>
+${base}
+</td>
+
+<td>
+${prefixosEncontrados.join(" / ")}
+</td>
+
+<td>
+${prefixosEncontrados.length}
+</td>
+
 </tr>
+
 `;
 
 }
-
-});
-
-htmlPrefixos += "</table><br>";
-
-htmlPrefixos += `
-
-<h3 style="color:#1e3a8a;">
-RAFAEL
-</h3>
-
-<table>
-
-<tr>
-<th>Base</th>
-<th>Prefixos</th>
-</tr>
-
-`;
-
-["71","50","61","52"].forEach(base=>{
-
-if(prefixosPorBase[base]){
-
-htmlPrefixos += `
-<tr>
-<td>${base}</td>
-<td>${Array.from(prefixosPorBase[base]).join(" / ")}</td>
-</tr>
-`;
-
-}
-
-});
-
-htmlPrefixos += "</table><br>";
-
-htmlPrefixos += `
-
-<h3 style="color:#1e3a8a;">
-LUIS
-</h3>
-
-<table>
-
-<tr>
-<th>Base</th>
-<th>Prefixos</th>
-</tr>
-
-`;
-
-["09","10","20","21","22","18"].forEach(base=>{
-
-if(prefixosPorBase[base]){
-
-htmlPrefixos += `
-<tr>
-<td>${base}</td>
-<td>${Array.from(prefixosPorBase[base]).join(" / ")}</td>
-</tr>
-`;
 
 }
 
 });
 
 htmlPrefixos += "</table>";
+
+}
 
 document.getElementById("prefixosBase").innerHTML =
 htmlPrefixos;
@@ -470,7 +483,9 @@ let htmlDias = "<table>";
 htmlDias += "<tr><th>Base</th>";
 
 proximasDatas.forEach(d=>{
+
 htmlDias += `<th>${d}</th>`;
+
 });
 
 htmlDias += "</tr>";
