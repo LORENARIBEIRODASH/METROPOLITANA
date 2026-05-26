@@ -248,9 +248,6 @@ for(let i = 1; i < linhas.length; i++){
 
 let linha = linhas[i];
 
-let numero =
-(linha[2] || "").trim();
-
 let dataLimite =
 (linha[3] || "").trim().split(" ")[0];
 
@@ -267,7 +264,7 @@ if(!situacao.includes("atribu")){
 continue;
 }
 
-if(!numero || !dataLimite || !base){
+if(!dataLimite || !base || !prefixo){
 continue;
 }
 
@@ -290,10 +287,10 @@ resumoDias[base] = {};
 }
 
 if(!resumoDias[base][dataLimite]){
-resumoDias[base][dataLimite] = new Set();
+resumoDias[base][dataLimite] = [];
 }
 
-resumoDias[base][dataLimite].add(numero);
+resumoDias[base][dataLimite].push(prefixo);
 
 }
 
@@ -493,7 +490,7 @@ htmlDias += `<tr><td>${base}</td>`;
 proximasDatas.forEach(data=>{
 
 let qtd =
-(resumoDias[base][data] || new Set()).size;
+(resumoDias[base][data] || []).length;
 
 htmlDias += `<td>${qtd}</td>`;
 
@@ -512,7 +509,7 @@ let totalDia = 0;
 for(let base in resumoDias){
 
 totalDia +=
-(resumoDias[base][data] || new Set()).size;
+(resumoDias[base][data] || []).length;
 
 }
 
