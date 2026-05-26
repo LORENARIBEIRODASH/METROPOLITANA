@@ -133,7 +133,7 @@ ACOMPANHAMENTO EM TEMPO REAL
 
 <div class="card">
 <h2 id="totalServicos">0</h2>
-<p>Total de Serviços Atribuídos</p>
+<p>Total de Serviços Operacionais</p>
 </div>
 
 </div>
@@ -261,7 +261,13 @@ let situacao =
 let base =
 (linha[12] || "").trim();
 
-if(!situacao.includes("atribuida")){
+if(
+!situacao.includes("atribuida") &&
+!situacao.includes("trabalhando") &&
+!situacao.includes("deslocamento") &&
+!situacao.includes("preparação") &&
+!situacao.includes("preparacao")
+){
 continue;
 }
 
@@ -326,7 +332,14 @@ let situacao =
 (linha[9] || "").trim().toLowerCase();
 
 if(
-situacao.includes("atribuida") &&
+(
+situacao.includes("atribuida") ||
+situacao.includes("trabalhando") ||
+situacao.includes("deslocamento") ||
+situacao.includes("preparação") ||
+situacao.includes("preparacao")
+)
+&&
 dataLimite === dataMaisProxima
 ){
 
