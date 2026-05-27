@@ -778,14 +778,31 @@ document.getElementById("proximosDias")
 ÚLTIMA ATUALIZAÇÃO
 ========================= */
 
-let ultimaLinha = linhas[1];
+Papa.parse(
+
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?gid=236915403&single=true&output=csv",
+
+{
+
+download:true,
+
+complete:function(atualizacaoResult){
+
+let linhaAtualizacao =
+atualizacaoResult.data[0];
 
 let atualizacao =
-(ultimaLinha[37] || "").toString().trim();
+(linhaAtualizacao[0] || "")
+.toString()
+.trim();
 
 document.getElementById("ultimaAtualizacao")
 .innerText =
 "Última atualização da planilha: " + atualizacao;
+
+}
+
+});
 
 /* =========================
 ANALYTICS
