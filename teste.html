@@ -318,7 +318,7 @@ ACOMPANHAMENTO EM TEMPO REAL
 
 <div class="bloco">
 
-<h3>Prioritários x Equipe</h3>
+<h3>Serviços da Data Mais Próxima</h3>
 
 <div id="servicosRecentes"></div>
 
@@ -680,102 +680,37 @@ document.getElementById("prefixosBase")
 SERVIÇOS RECENTES
 ========================= */
 
-const fiscaisEquipes = {
+let htmlRecentes = "<table>";
 
-"Ivan Soares":["19","24","51","66","92"],
+htmlRecentes += `
 
-"Rafael Pereira":["50","52","61","71"],
+<tr>
+<th>Prefixo</th>
+<th>Quantidade</th>
+<th>Data Limite</th>
+</tr>
 
-"Luís Guimarães":["09","10","18","20","21","22"]
+`;
 
-};
+for(let prefixo in servicosRecentes){
 
-let htmlRecentes = "";
+htmlRecentes += `
 
-for(let fiscal in fiscaisEquipes){
+<tr>
 
-    htmlRecentes += `
+<td>${prefixo}</td>
 
-    <h3 style="
-    margin-top:30px;
-    color:#1e3a8a;
-    font-size:24px;
-    ">
-    ${fiscal}
-    </h3>
+<td>${servicosRecentes[prefixo]}</td>
 
-    <table>
+<td>${dataMaisProxima}</td>
 
-    <tr>
-    <th>Equipe</th>
-    <th>Quantidade</th>
-    <th>Data</th>
-    </tr>
+</tr>
 
-    `;
-
-    let equipesFiscal = [];
-
-    for(let i = 1; i < linhas.length; i++){
-
-let linha = linhas[i];
-
-let dataLimite =
-(linha[3] || "").toString().trim().split(" ")[0];
-
-let prefixo =
-(linha[7] || "").toString().trim();
-
-let base =
-(linha[12] || "").toString().trim();
-
-if(dataLimite !== dataMaisProxima){
-continue;
-}
-
-        fiscaisEquipes[fiscal].forEach(baseFiscal=>{
-
-            if(base.startsWith(baseFiscal)){
-
-                equipesFiscal.push({
-
-                    prefixo:prefixo,
-
-                    quantidade:servicosRecentes[prefixo] || 0
-
-                });
-
-            }
-
-        });
-
-    }
-
-    equipesFiscal.sort((a,b)=>
-    a.prefixo.localeCompare(b.prefixo)
-    );
-
-    equipesFiscal.forEach(item=>{
-
-        htmlRecentes += `
-
-        <tr>
-
-        <td>${item.prefixo}</td>
-
-        <td>${item.quantidade}</td>
-
-        <td>${dataMaisProxima}</td>
-
-        </tr>
-
-        `;
-
-    });
-
-    htmlRecentes += "</table>";
+`;
 
 }
+
+htmlRecentes += "</table>";
 
 document.getElementById("servicosRecentes")
 .innerHTML = htmlRecentes;
