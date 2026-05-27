@@ -716,7 +716,22 @@ for(let fiscal in fiscaisEquipes){
 
     let equipesFiscal = [];
 
-    for(let prefixo in servicosRecentes){
+    for(let i = 1; i < linhas.length; i++){
+
+let linha = linhas[i];
+
+let dataLimite =
+(linha[3] || "").toString().trim().split(" ")[0];
+
+let prefixo =
+(linha[7] || "").toString().trim();
+
+let base =
+(linha[12] || "").toString().trim();
+
+if(dataLimite !== dataMaisProxima){
+continue;
+}
 
         fiscaisEquipes[fiscal].forEach(baseFiscal=>{
 
@@ -734,7 +749,7 @@ for(let fiscal in fiscaisEquipes){
 
         });
 
-    }
+    }}
 
     equipesFiscal.sort((a,b)=>
     a.prefixo.localeCompare(b.prefixo)
