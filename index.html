@@ -267,7 +267,7 @@ ACOMPANHAMENTO EM TEMPO REAL
 
 <div class="card">
 <h2 id="servicosHoje">0</h2>
-<p>COMERCIAL VENCENDO HOJE - BALDE</p>
+<p>Serviços vencendo na data mais próxima</p>
 <small id="dataMaisRecente"></small>
 </div>
 
@@ -680,41 +680,110 @@ document.getElementById("prefixosBase")
 SERVIÇOS RECENTES
 ========================= */
 
-let htmlRecentes = "<table>";
+/* =========================
+SERVIÇOS RECENTES
+========================= */
 
-htmlRecentes += `
-
-<tr>
-<th>Prefixo</th>
-<th>Quantidade</th>
-<th>Data Limite</th>
-</tr>
-
-`;
+let fiscaisSeparados = {
+    IVAN: {},
+    RAFAEL: {},
+    LUIS: {}
+};
 
 for(let prefixo in servicosRecentes){
 
-htmlRecentes += `
+    if(
+        prefixo.startsWith("19") ||
+        prefixo.startsWith("24") ||
+        prefixo.startsWith("51") ||
+        prefixo.startsWith("66") ||
+        prefixo.startsWith("92")
+    ){
 
-<tr>
+        fiscaisSeparados.IVAN[prefixo] =
+        servicosRecentes[prefixo];
 
-<td>${prefixo}</td>
+    }
 
-<td>${servicosRecentes[prefixo]}</td>
+    else if(
+        prefixo.startsWith("50") ||
+        prefixo.startsWith("52") ||
+        prefixo.startsWith("61") ||
+        prefixo.startsWith("71")
+    ){
 
-<td>${dataMaisProxima}</td>
+        fiscaisSeparados.RAFAEL[prefixo] =
+        servicosRecentes[prefixo];
 
-</tr>
+    }
 
-`;
+    else if(
+        prefixo.startsWith("09") ||
+        prefixo.startsWith("10") ||
+        prefixo.startsWith("18") ||
+        prefixo.startsWith("20") ||
+        prefixo.startsWith("21") ||
+        prefixo.startsWith("22")
+    ){
+
+        fiscaisSeparados.LUIS[prefixo] =
+        servicosRecentes[prefixo];
+
+    }
 
 }
 
-htmlRecentes += "</table>";
+let htmlRecentes = "";
+
+for(let fiscal in fiscaisSeparados){
+
+    htmlRecentes += `
+
+    <h3 style="
+    margin-top:30px;
+    color:#1e3a8a;
+    ">
+    ${fiscal}
+    </h3>
+
+    <table>
+
+    <tr>
+    <th>Prefixo</th>
+    <th>Quantidade</th>
+    <th>Data Limite</th>
+    </tr>
+
+    `;
+
+    let prefixosOrdenados =
+    Object.entries(fiscaisSeparados[fiscal])
+    .sort((a,b)=> a[0].localeCompare(b[0]));
+
+    prefixosOrdenados.forEach(item=>{
+
+        htmlRecentes += `
+
+        <tr>
+
+        <td>${item[0]}</td>
+
+        <td>${item[1]}</td>
+
+        <td>${dataHoje}</td>
+
+        </tr>
+
+        `;
+
+    });
+
+    htmlRecentes += "</table>";
+
+}
 
 document.getElementById("servicosRecentes")
 .innerHTML = htmlRecentes;
-
 /* =========================
 PRÓXIMOS DIAS
 ========================= */
@@ -961,3 +1030,4 @@ location.reload();
 </body>
 
 </html>
+
