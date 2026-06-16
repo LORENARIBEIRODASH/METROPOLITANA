@@ -7,6 +7,10 @@
 
 <title>COMERCIAL METROPOLITANA</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
@@ -19,44 +23,174 @@ body{
     color:white;
 }
 
-/* LOGIN */
+/* =========================
+CAPA DE ENTRADA
+========================= */
 
-#login{
+#capa{
     position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:#0f172a;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
+    inset:0;
     z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at 18% 18%, rgba(37,99,235,0.30), transparent 50%),
+        radial-gradient(circle at 82% 80%, rgba(96,165,250,0.18), transparent 50%),
+        linear-gradient(135deg,#080c18,#13234a 55%,#1e3a8a);
+    overflow:hidden;
 }
 
-#login input{
-    padding:15px;
-    width:250px;
-    border:none;
-    border-radius:10px;
+#capa::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 64px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0px, rgba(255,255,255,0.035) 1px, transparent 1px, transparent 64px);
+    pointer-events:none;
+}
+
+.capa-content{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    padding:40px;
+    max-width:760px;
+}
+
+.capa-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    letter-spacing:4px;
+    color:#fbbf24;
+    margin-bottom:22px;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+}
+
+.capa-eyebrow::before{
+    content:"";
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#fbbf24;
+    animation:pulseDot 1.6s infinite;
+}
+
+@keyframes pulseDot{
+    0%{box-shadow:0 0 0 0 rgba(251,191,36,0.6);}
+    70%{box-shadow:0 0 0 10px rgba(251,191,36,0);}
+    100%{box-shadow:0 0 0 0 rgba(251,191,36,0);}
+}
+
+.capa-title{
+    font-family:'Big Shoulders Display',sans-serif;
+    font-weight:900;
+    font-size:84px;
+    line-height:0.98;
+    letter-spacing:1px;
+    margin:0 0 18px;
+    text-transform:uppercase;
+}
+
+.capa-subtitle{
+    font-family:'Inter',sans-serif;
     font-size:18px;
-    margin-bottom:15px;
+    color:#bcd0f0;
+    margin:0 0 40px;
+    font-weight:400;
+    line-height:1.5;
 }
 
-#login button{
-    padding:15px 30px;
+.capa-rota{
+    position:relative;
+    width:100%;
+    max-width:520px;
+    height:46px;
+    margin:0 auto 40px;
+}
+
+.capa-rota-linha{
+    position:absolute;
+    top:50%;
+    left:0;
+    right:0;
+    height:2px;
+    background:rgba(255,255,255,0.18);
+    transform:translateY(-50%);
+}
+
+.capa-parada{
+    position:absolute;
+    top:50%;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:#60a5fa;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 4px rgba(96,165,250,0.15);
+}
+
+.capa-veiculo{
+    position:absolute;
+    top:50%;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#fbbf24;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 16px 4px rgba(251,191,36,0.6);
+    animation:viajar 5s ease-in-out infinite alternate;
+}
+
+@keyframes viajar{
+    0%{left:0%;}
+    100%{left:100%;}
+}
+
+.capa-btn{
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:18px;
+    letter-spacing:1px;
+    padding:18px 48px;
     border:none;
-    border-radius:10px;
-    background:#2563eb;
+    border-radius:14px;
+    background:linear-gradient(135deg,#2563eb,#1e3a8a);
     color:white;
-    font-size:18px;
     cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    box-shadow:0 10px 30px rgba(37,99,235,0.4);
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-#erroSenha{
-    color:red;
-    margin-top:10px;
+.capa-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 36px rgba(37,99,235,0.55);
+}
+
+.capa-btn:focus-visible{
+    outline:3px solid #fbbf24;
+    outline-offset:3px;
+}
+
+.capa-btn .seta{
+    transition:transform 0.2s ease;
+}
+
+.capa-btn:hover .seta{
+    transform:translateX(4px);
+}
+
+@media (max-width:600px){
+    .capa-title{font-size:48px;}
+    .capa-subtitle{font-size:15px;}
+    .capa-btn{padding:16px 36px;font-size:16px;}
+    .capa-rota{max-width:320px;}
 }
 
 /* TOPO */
@@ -207,25 +341,39 @@ tr:nth-child(even){
 
 <body>
 
-<!-- LOGIN -->
+<!-- CAPA DE ENTRADA -->
 
-<div id="login">
+<div id="capa">
 
-<h1 style="font-size:45px;margin-bottom:30px;">
-COMERCIAL METROPOLITANA
+<div class="capa-content">
+
+<div class="capa-eyebrow">
+ACOMPANHAMENTO
+</div>
+
+<h1 class="capa-title">
+COMERCIAL<br>METROPOLITANA
 </h1>
 
-<input
-type="password"
-id="senha"
-placeholder="Digite a senha"
-/>
+<p class="capa-subtitle">
+Controle de equipes · Demandas prioritárias · Baldes
+</p>
 
-<button onclick="validarSenha()">
-ENTRAR
+<div class="capa-rota">
+<div class="capa-rota-linha"></div>
+<div class="capa-parada" style="left:0%"></div>
+<div class="capa-parada" style="left:25%"></div>
+<div class="capa-parada" style="left:50%"></div>
+<div class="capa-parada" style="left:75%"></div>
+<div class="capa-parada" style="left:100%"></div>
+<div class="capa-veiculo"></div>
+</div>
+
+<button class="capa-btn" onclick="acessar()">
+ACESSAR <span class="seta">→</span>
 </button>
 
-<div id="erroSenha"></div>
+</div>
 
 </div>
 
@@ -290,17 +438,17 @@ ACOMPANHAMENTO EM TEMPO REAL
 <div class="grid-fiscais">
 
 <div class="fiscal ivan">
-<h2>Ivan Soares</h2>
+<h2>IVAN</h2>
 <p>19 / 24 / 51 / 66 / 92</p>
 </div>
 
 <div class="fiscal rafael">
-<h2>Rafael Pereira</h2>
+<h2>RAFAEL</h2>
 <p>71 / 50 / 61 / 52</p>
 </div>
 
 <div class="fiscal luis">
-<h2>Luís Guimarães</h2>
+<h2>LUIS</h2>
 <p>09 / 10 / 18 / 20 / 21 / 22</p>
 </div>
 
@@ -388,25 +536,13 @@ ABA ANALYTICS
 <script>
 
 /* =========================
-LOGIN
+CAPA
 ========================= */
 
-function validarSenha(){
+function acessar(){
 
-let senha =
-document.getElementById("senha").value;
-
-if(senha === "METRO2"){
-
-document.getElementById("login")
+document.getElementById("capa")
 .style.display = "none";
-
-}else{
-
-document.getElementById("erroSenha")
-.innerText = "Senha incorreta";
-
-}
 
 }
 
@@ -614,9 +750,9 @@ FISCAIS
 
 const fiscais = {
 
-"Ivan Soares":["19","24","51","66","92"],
-"Rafael Pereira":["50","52","61","71"],
-"Luís Guimarães":["09","10","18","20","21","22"]
+IVAN:["19","24","51","66","92"],
+RAFAEL:["50","52","61","71"],
+LUIS:["09","10","18","20","21","22"]
 
 };
 
@@ -778,31 +914,14 @@ document.getElementById("proximosDias")
 ÚLTIMA ATUALIZAÇÃO
 ========================= */
 
-Papa.parse(
-
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vSoFuHM9sJ5f7HSNY-qXVmgO-zKFTSG9rn9bAn_xUfXgT3IFBi5qtSiVmn3rH9oO1k5hTgPpAmB58z3/pub?gid=236915403&single=true&output=csv",
-
-{
-
-download:true,
-
-complete:function(atualizacaoResult){
-
-let linhaAtualizacao =
-atualizacaoResult.data[0];
+let ultimaLinha = linhas[1];
 
 let atualizacao =
-(linhaAtualizacao[0] || "")
-.toString()
-.trim();
+(ultimaLinha[37] || "").toString().trim();
 
 document.getElementById("ultimaAtualizacao")
 .innerText =
 "Última atualização da planilha: " + atualizacao;
-
-}
-
-});
 
 /* =========================
 ANALYTICS
@@ -971,7 +1090,7 @@ setInterval(() => {
 
 location.reload();
 
-}, 10000000);
+}, 30000);
 
 </script>
 
